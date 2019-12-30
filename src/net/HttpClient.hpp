@@ -1,0 +1,5 @@
+namespace my{
+    class HttpClient{
+
+    };
+}
