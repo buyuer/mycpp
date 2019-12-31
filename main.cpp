@@ -1,21 +1,15 @@
-#include "my.hpp"
+//#include "my.hpp"
 
-
+#include "src/base/buff.hpp"
 
 int main() {
-    my::Socket socket1(my::Socket::IPV4);
 
-    socket1.bind("127.0.0.1", 7777);
+    HANDLE file = CreateFile("D:\\test.txt", GENERIC_READ | GENERIC_WRITE, NULL, NULL, OPEN_ALWAYS, NULL, NULL);
+    my::basic_buff<char> buff(file, file);
+    std::iostream io(&buff);
 
-    socket1.listen();
+    io << "Hello world" << std::endl;
 
-    while(true){
-        my::Socket sock = socket1.accept();
-        std::cout << "sock" << std::endl;
-        std::string str;
-        getline(std::cin, str);
-        sock.io() << "Welcome" << str << std::flush;
-    }
 
     return 0;
 }
