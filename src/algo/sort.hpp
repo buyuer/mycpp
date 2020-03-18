@@ -14,7 +14,7 @@
 
 namespace my {
 
-//冒泡排序
+    //冒泡排序
     template<typename Type, typename Compare>
     void BubbleSort(Type *src, size_t length, Compare compare) noexcept {
         for (size_t i = 1; i < length; i++) {
@@ -32,7 +32,7 @@ namespace my {
         }
     }
 
-//选择排序
+    //选择排序
     template<typename Type, typename Compare>
     void SelectionSort(Type *src, size_t length, Compare compare) noexcept {
         for (size_t i = 0; i < length - 1; i++) {
@@ -50,7 +50,7 @@ namespace my {
         }
     }
 
-//插入排序
+    //插入排序
     template<typename Type, typename Compare>
     void InsertSort(Type *src, size_t length, Compare compare) noexcept {
         for (size_t i = 1; i < length; i++) {
@@ -66,7 +66,7 @@ namespace my {
         }
     }
 
-//希尔排序
+    //希尔排序
     template<typename Type, typename Compare>
     void ShellSort(Type *src, size_t length, Compare compare) noexcept {
         size_t gap = 1;
@@ -87,7 +87,7 @@ namespace my {
         }
     }
 
-//希尔排序实现2
+    //希尔排序实现2
     template<typename Type, typename Compare>
     void ShellSort2(Type *src, size_t length, Compare compare) noexcept {
         size_t gap = length / 2;
@@ -106,7 +106,7 @@ namespace my {
         }
     }
 
-//归并排序（循环实现）
+    //归并排序（循环实现）
     template<typename Type, typename Compare>
     void MergeSort(Type *src, size_t length, Compare compare) noexcept {
         //合并函数，将有序数组src1和src2合并到长度为（src1_len + src2_len2）result数组中
@@ -165,7 +165,7 @@ namespace my {
         }
     }
 
-//归并排序（递归实现）
+    //归并排序（递归实现）
     template<typename Type, typename Compare>
     void MergeSort2(Type *src, size_t length, Compare compare) noexcept {
         //合并函数，将有序数组src1和src2合并到长度为（src1_len + src2_len2）result数组中
@@ -207,7 +207,7 @@ namespace my {
         }
     }
 
-//快速排序(递归实现）
+    //快速排序(递归实现）
     template<typename Type, typename Compare>
     void QuickSort(Type *src, size_t length, Compare compare) noexcept {
         //分区函数，把nums数组的start到end索引内的元素按nums[start]为基准分区
@@ -242,7 +242,7 @@ namespace my {
         quick(src, 0, length);
     }
 
-//快速排序(循环实现）待实现
+    //快速排序(循环实现）待实现
     template<typename Type, typename Compare>
     void QuickSort2(Type *src, size_t length, Compare compare) noexcept {
         //分区函数，把nums数组的start到end索引内的元素按nums[start]为基准分区

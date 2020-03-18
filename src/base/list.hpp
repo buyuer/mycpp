@@ -22,6 +22,10 @@ namespace my {
         virtual size_t get_size() const = 0;
 
         virtual T &get(size_t pos) const = 0;
+
+        virtual T &operator[](const size_t pos) const = 0;
+
+        virtual void clean() = 0;
     };
 
 
@@ -128,7 +132,7 @@ namespace my {
             }
         };
 
-        void clean() {
+        void clean() override {
             element *index = head;
             for (size_t i = 0; i < size; i++) {
                 element *temp = index;
@@ -330,6 +334,10 @@ namespace my {
 
         T &operator[](size_t pos) const {
             return *(data + pos);
+        }
+
+        void clean() override {
+            len = 0;
         }
 
         T *get_data() {
