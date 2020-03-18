@@ -26,6 +26,10 @@ namespace my {
         virtual T &operator[](const size_t pos) const = 0;
 
         virtual void clean() = 0;
+
+        virtual T &get_front() = 0;
+
+        virtual T &get_back() = 0;
     };
 
 
@@ -230,11 +234,11 @@ namespace my {
             return temp->value;
         }
 
-        T &get_front() {
+        T &get_front() override {
             return head->value;
         }
 
-        T &get_back() {
+        T &get_back() override {
             return tail->value;
         }
 
@@ -338,6 +342,14 @@ namespace my {
 
         void clean() override {
             len = 0;
+        }
+
+        T &get_front() override {
+            return data[0];
+        }
+
+        T &get_back() override {
+            return data[len];
         }
 
         T *get_data() {
