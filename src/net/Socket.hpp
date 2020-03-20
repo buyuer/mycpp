@@ -150,6 +150,10 @@ namespace my {
             }
         }
 
+        int get_socket() {
+            return sock->socket_fd;
+        }
+
 #endif
 
         std::iostream &io() {

@@ -1,7 +1,7 @@
 
 
-namespace my{
-    class Http{
+namespace my {
+    class Http {
 
     };
 }

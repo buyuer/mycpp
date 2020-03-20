@@ -1,26 +1,28 @@
 #include "base/base.hpp"
 
-namespace my{
+namespace my {
 
     class Serial : public std::iostream {
     private:
-        struct element{
+        struct element {
             int rec_num;
 #ifdef USE_LINUX
             int serial_fd;
 #endif
             serialbuff serbuf;
-            element():rec_num(1){}
-            ~element(){
+
+            element() : rec_num(1) {}
+
+            ~element() {
                 serbuf.sync();
                 close(serial_fd);
             }
         };
 
-        element* serial;
+        element *serial;
 
     public:
-        enum BOUND: unsigned int{
+        enum BOUND : unsigned int {
             BOUND9600 = B9600,
             BOUND19200 = B19200,
             BOUND115200 = B115200,
@@ -28,16 +30,16 @@ namespace my{
             BOUND921600 = B921600,
         };
 
-        Serial(std::string com, BOUND bound){
+        Serial(std::string com, BOUND bound) {
             serial = new element();
 
             serial->serial_fd = ::open(com.data(), O_RDWR | O_NOCTTY);
-            if(serial->serial_fd == -1){
+            if (serial->serial_fd == -1) {
                 perror("open serial failed");
                 exit(0);
             }
             termios option;
-            if(tcgetattr(serial->serial_fd, &option) != 0){
+            if (tcgetattr(serial->serial_fd, &option) != 0) {
                 perror("SetupSerial 1");
                 exit(0);
             }
@@ -47,8 +49,8 @@ namespace my{
             option.c_cflag &= ~CSTOPB;
             option.c_cflag &= ~PARODD;
             option.c_cflag &= ~PARENB;
-            option.c_cflag |=  CREAD | CLOCAL;
-            option.c_cflag |=  CS8;
+            option.c_cflag |= CREAD | CLOCAL;
+            option.c_cflag |= CS8;
 
             option.c_oflag &= ~OPOST;
             option.c_oflag &= ~(ONLCR | OCRNL | ONOCR);
@@ -59,16 +61,15 @@ namespace my{
             option.c_iflag &= ~(ICRNL | INLCR);
             option.c_iflag &= ~(IXON | IXANY | IXOFF);
 
-            option.c_lflag &= ~(ISIG | ECHO |  ECHOE);
+            option.c_lflag &= ~(ISIG | ECHO | ECHOE);
             option.c_lflag &= ~ICANON;
 
             option.c_cc[VTIME] = 0;
-            option.c_cc[VMIN]  = 1;
+            option.c_cc[VMIN] = 1;
 
             tcflush(serial->serial_fd, TCIOFLUSH);
 
-            if(tcsetattr(serial->serial_fd, TCSANOW,&option) != 0)
-            {
+            if (tcsetattr(serial->serial_fd, TCSANOW, &option) != 0) {
                 perror("com ser error");
                 exit(0);
             }
@@ -77,20 +78,20 @@ namespace my{
             this->init(&serial->serbuf);
         }
 
-        Serial(const Serial& s) = delete;
+        Serial(const Serial &s) = delete;
 
-        Serial(Serial&& s):std::iostream(std::move(s)){
+        Serial(Serial &&s) : std::iostream(std::move(s)) {
             this->serial = s.serial;
             this->serial->rec_num += 1;
         };
 
-        Serial& operator=(const Serial&) = delete;
+        Serial &operator=(const Serial &) = delete;
 
-        Serial& operator=(Serial&&) = delete;
+        Serial &operator=(Serial &&) = delete;
 
-        ~Serial(){
+        ~Serial() {
             serial->rec_num -= 1;
-            if(serial->rec_num <= 0){
+            if (serial->rec_num <= 0) {
                 delete serial;
             }
         }

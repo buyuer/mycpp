@@ -28,8 +28,6 @@
 #endif
 
 
-
-
 #ifdef USE_WIN32
 
 #include <winsock2.h>

@@ -1,6 +1,6 @@
 
-namespace my{
-    class HttpServer{
+namespace my {
+    class HttpServer {
 
     };
 }
