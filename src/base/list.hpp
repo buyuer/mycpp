@@ -30,11 +30,14 @@ namespace my {
         virtual T &get_front() = 0;
 
         virtual T &get_back() = 0;
+
+        virtual bool is_empty() = 0;
     };
 
 
     template<class T>
     class list_link : public list<T> {
+
         struct element {
             T value;
             element *last;
@@ -51,7 +54,7 @@ namespace my {
         element *tail;
 
     public:
-        /*iterator end应该指向空，而不是最后一个*/
+
         class iterator {
             element *rec;
         public:
@@ -242,6 +245,10 @@ namespace my {
             return tail->value;
         }
 
+        bool is_empty() override {
+            return size == 0;
+        }
+
         iterator begin() {
             return iterator(head);
         }
@@ -354,6 +361,10 @@ namespace my {
 
         T *get_data() {
             return data;
+        }
+
+        bool is_empty() override {
+            return len == 0;
         }
     };
 
