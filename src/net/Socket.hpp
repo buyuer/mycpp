@@ -1,3 +1,5 @@
+#pragma once
+
 #include <netinet/in.h>
 #include "base/base.hpp"
 
