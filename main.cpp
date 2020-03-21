@@ -11,7 +11,7 @@ int main() {
 
     sock.connect("127.0.0.1",6666);
 
-    sock.io() << "1234" << std::flush;
+    sock.io() << "1" << std::flush;
 
     return 0;
 }

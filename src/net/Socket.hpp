@@ -21,8 +21,7 @@ namespace my {
             }
 
             ~element() {
-                //由于close socket后，sokbuf才被析构，在析构时，sync要被调用，此时socket已经closed，所以这里要先同步一次，清空缓冲区。
-                //sockbuf.sync();
+
 #ifdef USE_LINUX
                 close(socket_fd);
                 sockbuf.dis_init();
