@@ -26,7 +26,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <termios.h>
-#include <netinet/in.h>
 
 #endif
 
