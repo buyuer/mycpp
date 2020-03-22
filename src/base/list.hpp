@@ -229,7 +229,7 @@ namespace my {
             return (*this)[pos];
         }
 
-        T &operator[](size_t pos) const {
+        T &operator[](size_t pos) const override {
             element *temp = head;
             for (size_t i = 0; i < pos; i++) {
                 temp = temp->next;
@@ -343,7 +343,7 @@ namespace my {
             return *(data + pos);
         }
 
-        T &operator[](size_t pos) const {
+        T &operator[](size_t pos) const override {
             return *(data + pos);
         }
 

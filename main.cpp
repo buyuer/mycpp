@@ -9,9 +9,13 @@ int main() {
 
     Socket sock = Socket(Socket::IPV4);
 
-    sock.connect("127.0.0.1",6666);
+    //sock.connect("127.0.0.1",6666);
 
-    sock.io() << "1" << std::flush;
+    //sock.io() << "1" << std::flush;
+
+    Server httpServer(9999);
+
+    httpServer.start();
 
     return 0;
 }

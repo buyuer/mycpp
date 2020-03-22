@@ -16,6 +16,9 @@
 #include <vector>
 #include <unordered_map>
 #include <map>
+#include <thread>
+#include <mutex>
+#include <atomic>
 
 //平台头文件
 #ifdef USE_LINUX
@@ -26,6 +29,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <termios.h>
+#include <sys/epoll.h>
 
 #endif
 

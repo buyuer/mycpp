@@ -10,7 +10,7 @@ namespace my {
     protected:
 
         bool parse(const s8* data){
-
+            return false;
         }
     };
 }
