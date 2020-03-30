@@ -19,6 +19,7 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <condition_variable>
 
 //平台头文件
 #ifdef USE_LINUX
@@ -27,9 +28,10 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/epoll.h>
+#include <sys/types.h>
 #include <arpa/inet.h>
 #include <termios.h>
-#include <sys/epoll.h>
 
 #endif
 
