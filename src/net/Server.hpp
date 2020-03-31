@@ -27,22 +27,27 @@ namespace my {
         };
 
 
-        using func = void (*)(element *, const int);
+        using func = void (*)(std::map<int, element> *, const int);
 
-        func handler = [](element *ele_, const int sock_) -> void {
-            std::unique_lock<std::mutex> ul(ele_->m);
+        func handler = [](std::map<int, element> *es_, const int sock_) -> void {
+
             std::cout << "handler is called" << std::endl;
-            while (ele_->flag) {
-                ele_->cv.wait(ul);
+
+            for (auto it = es_->find(sock_); it != es_->end(); it = es_->find(sock_)) {
+                std::unique_lock<std::mutex> ul(it->second.m);
+                it->second.cv.wait(ul);
+
                 char data[1024];
                 int count = ::recv(sock_, data, 1024, ::MSG_DONTWAIT);
                 if (count == -1) {
                     std::perror("recv failed");
-                    continue;
+                    break;
                 } else if (count != 0) {
                     std::cout << std::string(data, count) << std::endl;
                 }
             }
+
+            return;
         };
 
         Socket sock;
@@ -106,7 +111,9 @@ namespace my {
             }
 
             while (true) {
+
                 int con = ::epoll_wait(epfd, evs, MAX_EVENT, -1);
+
                 for (int i = 0; i < con; i++) {
 
                     //错误
@@ -114,7 +121,12 @@ namespace my {
                         delfd2epoll(epfd, evs[i].data.fd);
                         auto it = elements.find(evs[i].data.fd);
                         if (it != elements.end()) {
+                            it->second.cv.notify_all();
                             elements.erase(it);
+                        }
+                        if (evs[i].data.fd == sock.get_socket()) {
+                            perror("server socket err");
+                            break;
                         }
                     }
                         //新请求
@@ -134,7 +146,7 @@ namespace my {
                             auto[it, flag] = elements.insert(std::pair<int, element>(cfd, element()));
                             if (flag) {
                                 it->second.flag = true;
-                                it->second.t = std::thread(handler, &it->second, it->first);
+                                it->second.t = std::thread(handler, &elements, it->first);
                                 it->second.t.detach();
                             }
                         }
@@ -145,6 +157,19 @@ namespace my {
                         auto it = elements.find(evs[i].data.fd);
                         if (it != elements.end()) {
                             it->second.cv.notify_all();
+                        }
+                    }
+                        //远程客户端关闭
+                    else if (evs[i].events & (::EPOLLRDHUP | ::EPOLLIN)) {
+                        std::cout << "close" << std::endl;
+                        auto it = elements.find(evs[i].data.fd);
+                        if (it != elements.end()) {
+                            it->second.cv.notify_all();
+                            elements.erase(it);
+                        }
+                        if (evs[i].data.fd == sock.get_socket()) {
+                            perror("server socket err");
+                            break;
                         }
                     }
 
