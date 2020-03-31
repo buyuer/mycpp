@@ -12,20 +12,19 @@ namespace my {
             std::mutex m;
             std::condition_variable cv;
             std::thread t;
-            bool flag;
+            bool run;
 
-            element() : flag(false) {}
+            element() : run(false) {}
 
             element(const element &h) {
-                this->flag = h.flag;
+                this->run = h.run;
             }
 
             element &operator=(const element &h) {
-                this->flag = h.flag;
+                this->run = h.run;
                 return *this;
             }
         };
-
 
         using func = void (*)(std::map<int, element> *, const int);
 
@@ -33,7 +32,17 @@ namespace my {
 
             std::cout << "handler is called" << std::endl;
 
-            for (auto it = es_->find(sock_); it != es_->end(); it = es_->find(sock_)) {
+            while (true) {
+
+                auto it = es_->find(sock_);
+
+                if (it == es_->end()) {
+                    it->second.run = false;
+                    break;
+                }
+
+                it->second.run = true;
+
                 std::unique_lock<std::mutex> ul(it->second.m);
                 it->second.cv.wait(ul);
 
@@ -41,10 +50,13 @@ namespace my {
                 int count = ::recv(sock_, data, 1024, ::MSG_DONTWAIT);
                 if (count == -1) {
                     std::perror("recv failed");
+                    it->second.run = false;
                     break;
                 } else if (count != 0) {
                     std::cout << std::string(data, count) << std::endl;
                 }
+
+                it->second.run = false;
             }
 
             return;
@@ -57,11 +69,10 @@ namespace my {
         int epfd;
         epoll_event *evs;
         const size_t MAX_EVENT = 4096;
-#endif
 
         static bool addfd2epoll(int epfd, int fd) {
             ::epoll_event ev;
-            ev.events = ::EPOLLIN | ::EPOLLET | ::EPOLLERR;
+            ev.events = ::EPOLLIN | ::EPOLLET | ::EPOLLERR | ::EPOLLRDHUP | ::EPOLLHUP | ::EPOLLOUT;
             ev.data.fd = fd;
             if (::epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1) {
                 perror("epoll add failed");
@@ -80,7 +91,10 @@ namespace my {
             return true;
         }
 
+#endif
+
     public:
+
         Server(int port) :
                 sock(Socket::IPV4), epfd(-1), evs(nullptr) {
             sock.bind("127.0.0.1", port);
@@ -95,6 +109,9 @@ namespace my {
         virtual ~Server() {
             if (evs != nullptr) {
                 delete[] evs;
+            }
+            for(auto &i : elements){
+                ::close(i.first);
             }
         }
 
@@ -116,7 +133,6 @@ namespace my {
 
                 for (int i = 0; i < con; i++) {
 
-                    //错误
                     if (evs[i].events & ::EPOLLERR) {
                         delfd2epoll(epfd, evs[i].data.fd);
                         auto it = elements.find(evs[i].data.fd);
@@ -145,32 +161,29 @@ namespace my {
                         if (addfd2epoll(this->epfd, cfd)) {
                             auto[it, flag] = elements.insert(std::pair<int, element>(cfd, element()));
                             if (flag) {
-                                it->second.flag = true;
                                 it->second.t = std::thread(handler, &elements, it->first);
                                 it->second.t.detach();
                             }
                         }
                     }
                         //可读
-                    else if (evs[i].events & ::EPOLLIN) {
+                    else if (!(evs[i].events & ~(::EPOLLIN | ::EPOLLOUT))) {
 
                         auto it = elements.find(evs[i].data.fd);
                         if (it != elements.end()) {
                             it->second.cv.notify_all();
                         }
+
                     }
                         //远程客户端关闭
                     else if (evs[i].events & (::EPOLLRDHUP | ::EPOLLIN)) {
-                        std::cout << "close" << std::endl;
+
                         auto it = elements.find(evs[i].data.fd);
                         if (it != elements.end()) {
                             it->second.cv.notify_all();
                             elements.erase(it);
                         }
-                        if (evs[i].data.fd == sock.get_socket()) {
-                            perror("server socket err");
-                            break;
-                        }
+
                     }
 
                 }
