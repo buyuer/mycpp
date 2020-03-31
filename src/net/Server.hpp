@@ -65,13 +65,13 @@ namespace my {
         Socket sock;
         std::map<int, element> elements;
 
-#ifdef USE_LINUX
         int epfd;
         epoll_event *evs;
         const size_t MAX_EVENT = 4096;
 
         static bool addfd2epoll(int epfd, int fd) {
             ::epoll_event ev;
+            //监听事件：读、写、错误、边缘触发模式（ET）、关闭事件
             ev.events = ::EPOLLIN | ::EPOLLET | ::EPOLLERR | ::EPOLLRDHUP | ::EPOLLHUP | ::EPOLLOUT;
             ev.data.fd = fd;
             if (::epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1) {
@@ -91,7 +91,6 @@ namespace my {
             return true;
         }
 
-#endif
 
     public:
 
@@ -110,7 +109,7 @@ namespace my {
             if (evs != nullptr) {
                 delete[] evs;
             }
-            for(auto &i : elements){
+            for (auto &i : elements) {
                 ::close(i.first);
             }
         }
@@ -133,6 +132,7 @@ namespace my {
 
                 for (int i = 0; i < con; i++) {
 
+                    //错误处理
                     if (evs[i].events & ::EPOLLERR) {
                         delfd2epoll(epfd, evs[i].data.fd);
                         auto it = elements.find(evs[i].data.fd);
@@ -166,7 +166,7 @@ namespace my {
                             }
                         }
                     }
-                        //可读
+                        //可读写（只监听读和写）
                     else if (!(evs[i].events & ~(::EPOLLIN | ::EPOLLOUT))) {
 
                         auto it = elements.find(evs[i].data.fd);
