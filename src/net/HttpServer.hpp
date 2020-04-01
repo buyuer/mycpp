@@ -1,27 +1,22 @@
 #pragma once
 
-#include "Socket.hpp"
+#include "Server.hpp"
+#include "Http.hpp"
 
 namespace my {
 
-    class HttpServer {
-
-    private:
-        Socket sock;
+    class HttpServer : public Server{
 
     public:
 
-        HttpServer(int port) : sock(Socket::IPV4) {
-            sock.bind("127.0.0.1", port);
+        HttpServer(int port) : Server(port) {
+
         }
 
-        void start() {
+        void start() override {
 
-            sock.listen();
+            Server::start();
 
-            while (true) {
-
-            }
         }
     };
 }

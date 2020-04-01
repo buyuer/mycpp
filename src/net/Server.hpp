@@ -6,7 +6,12 @@ namespace my {
 
     class Server {
 
-    private:
+    public:
+        using user_handler = void (*)(const std::vector<char> &);
+
+        user_handler handler;
+
+    protected:
 
         struct element {
             std::mutex m;
@@ -26,11 +31,11 @@ namespace my {
             }
         };
 
-        using func = void (*)(std::map<int, element> *, const int);
+        using func = void (*)(std::map<int, element> *, const int, const user_handler);
 
-        func handler = [](std::map<int, element> *es_, const int sock_) -> void {
+        func handler_thread = [](std::map<int, element> *es_, const int sock_, const user_handler handler_) -> void {
 
-            std::cout << "handler is called" << std::endl;
+            //std::cout << "handler_thread is called" << std::endl;
 
             while (true) {
 
@@ -46,19 +51,26 @@ namespace my {
                 std::unique_lock<std::mutex> ul(it->second.m);
                 it->second.cv.wait(ul);
 
-                char data[1024];
-                int count = ::recv(sock_, data, 1024, ::MSG_DONTWAIT);
-                if (count == -1) {
-                    std::perror("recv failed");
-                    it->second.run = false;
-                    break;
-                } else if (count != 0) {
-                    std::cout << std::string(data, count) << std::endl;
+                std::vector<char> data;
+                data.reserve(1024);
+                std::vector<char> buffer(1024);
+
+                while (int count = ::recv(sock_, buffer.data(), 1024, ::MSG_DONTWAIT) != 0) {
+
+                    if (count == -1) {
+                        std::perror("recv failed");
+                        it->second.run = false;
+                        goto end;
+                    } else if (count > 0) {
+                        data.insert(data.end(), buffer.begin(), buffer.begin() + count);
+                    }
                 }
+
+                handler_(data);
 
                 it->second.run = false;
             }
-
+            end:
             return;
         };
 
@@ -66,7 +78,7 @@ namespace my {
         std::map<int, element> elements;
 
         int epfd;
-        epoll_event *evs;
+        ::epoll_event *evs;
         const size_t MAX_EVENT = 4096;
 
         static bool addfd2epoll(int epfd, int fd) {
@@ -102,6 +114,10 @@ namespace my {
                 exit(0);
             }
             evs = new epoll_event[MAX_EVENT];
+
+            handler = [](const std::vector<char>& data) -> void {
+                std::cout << data.size() << std::endl;
+            };
         }
 
 
@@ -161,7 +177,7 @@ namespace my {
                         if (addfd2epoll(this->epfd, cfd)) {
                             auto[it, flag] = elements.insert(std::pair<int, element>(cfd, element()));
                             if (flag) {
-                                it->second.t = std::thread(handler, &elements, it->first);
+                                it->second.t = std::thread(handler_thread, &elements, it->first, handler);
                                 it->second.t.detach();
                             }
                         }
