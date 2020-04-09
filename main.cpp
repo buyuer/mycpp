@@ -9,13 +9,15 @@ int main() {
 
     list_link<int> c;
 
-    c.begin();
+    for (int i = 0; i < 10; i++) {
+        c.add(i);
+    }
+
+    for(auto &i : c){
+        std::cout << i << std::endl;
+    }
 
     Socket sock = Socket(Socket::IPV4);
-
-    //sock.connect("127.0.0.1",6666);
-
-    //sock.io() << "1" << std::flush;
 
     Server httpServer(9999);
 

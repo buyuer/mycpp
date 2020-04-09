@@ -63,22 +63,22 @@ namespace my {
             }
 
             bool operator!=(const my::iterator<T> &it) noexcept(false) override {
-                auto i = dynamic_cast<my::list_link<T>::iterator>(it);
-                return this->operator!=(i);
+                const auto i = dynamic_cast<const my::list_link<T>::iterator&>(it);
+                return i.rec != this->rec;
             }
 
             bool operator==(const my::iterator<T> &it) override {
-                auto i = dynamic_cast<my::list_link<T>::iterator>(it);
-                return this->operator!=(i);
+                const auto i = dynamic_cast<const my::list_link<T>::iterator&>(it);
+                return i.rec == this->rec;
             }
 
-            bool operator!=(const my::list_link<T>::iterator &b) const {
+            /*bool operator!=(const my::list_link<T>::iterator &b) const {
                 return b.rec != this->rec;
-            }
+            }*/
 
-            bool operator==(const my::list_link<T>::iterator &b) const {
+            /*bool operator==(const my::list_link<T>::iterator &b) const {
                 return b.rec == this->rec;
-            }
+            }*/
         };
 
         list_link() :
@@ -155,10 +155,10 @@ namespace my {
             } else {
                 element *temp = new element(e);
                 temp->last = tail;
-                temp->next = head;
+                temp->next = nullptr;
                 tail->next = temp;
                 tail = temp;
-                head->last = tail;
+                head->last = nullptr;
             }
             ++size;
         }
@@ -249,7 +249,7 @@ namespace my {
         }
 
         my::list_link<T>::iterator end() {
-            return iterator(tail);
+            return iterator(nullptr);
         }
 
         void push(const T &ele_) override {
