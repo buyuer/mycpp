@@ -4,8 +4,12 @@ using namespace my;
 
 int main() {
 
-    list<int> *a = new list_link<int>();
-    list<int> *b = new list_array<int>();
+    list<int> &a = *new list_link<int>();
+    list<int> &b = *new list_array<int>();
+
+    list_link<int> c;
+
+    c.begin();
 
     Socket sock = Socket(Socket::IPV4);
 

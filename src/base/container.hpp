@@ -24,33 +24,59 @@ namespace my {
 
     public:
 
-        class iterator {
+        class iterator : public my::iterator<T> {
+
             element *rec;
+
         public:
 
             iterator(element *p) : rec(p) {}
 
             iterator() : rec(nullptr) {}
 
-            iterator &operator++() {
+            my::list_link<T>::iterator &operator++() override {
                 rec = rec->next;
                 return *this;
             }
 
-            iterator &operator--() {
+            my::list_link<T>::iterator &operator--() override {
                 rec = rec->last;
                 return *this;
             }
 
-            T &operator*() {
+            my::list_link<T>::iterator &operator++(int i) override {
+                rec = rec->next;
+                return *this;
+            }
+
+            my::list_link<T>::iterator &operator--(int i) override {
+                rec = rec->last;
+                return *this;
+            }
+
+            T &operator*() override {
                 return rec->value;
             }
 
-            bool operator!=(const iterator &b) const {
+            T *operator->() override {
+                return &(rec->value);
+            }
+
+            bool operator!=(const my::iterator<T> &it) noexcept(false) override {
+                auto i = dynamic_cast<my::list_link<T>::iterator>(it);
+                return this->operator!=(i);
+            }
+
+            bool operator==(const my::iterator<T> &it) override {
+                auto i = dynamic_cast<my::list_link<T>::iterator>(it);
+                return this->operator!=(i);
+            }
+
+            bool operator!=(const my::list_link<T>::iterator &b) const {
                 return b.rec != this->rec;
             }
 
-            bool operator==(const iterator &b) const {
+            bool operator==(const my::list_link<T>::iterator &b) const {
                 return b.rec == this->rec;
             }
         };
@@ -218,11 +244,11 @@ namespace my {
             return size == 0;
         }
 
-        iterator begin() {
+        my::list_link<T>::iterator begin() {
             return iterator(head);
         }
 
-        iterator end() {
+        my::list_link<T>::iterator end() {
             return iterator(tail);
         }
 
