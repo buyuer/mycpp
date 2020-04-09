@@ -1,10 +1,11 @@
 #pragma once
 
 #include "list.hpp"
+#include "stack.hpp"
 
-namespace my{
+namespace my {
     template<class T>
-    class list_link : public list<T> {
+    class list_link : public list<T>, public stack<T> {
 
         struct element {
             T value;
@@ -224,11 +225,25 @@ namespace my{
         iterator end() {
             return iterator(tail);
         }
+
+        void push(const T &ele_) override {
+            add(ele_);
+        }
+
+        T pop() override {
+            T temp = get_back();
+            this->remove();
+            return temp;
+        }
+
+        T &peek() override {
+            return this->get_back();
+        }
     };
 
 
     template<class T>
-    class list_array : public list<T> {
+    class list_array : public list<T>, public stack<T> {
     private:
         T *data;
         size_t len;
@@ -333,6 +348,20 @@ namespace my{
 
         bool is_empty() override {
             return len == 0;
+        }
+
+        void push(const T &ele_) override {
+            this->add(ele_);
+        }
+
+        T pop() override {
+            T temp = get_back();
+            this->remove();
+            return temp;
+        }
+
+        T &peek() override {
+            return this->get_back();
         }
     };
 
