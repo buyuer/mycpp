@@ -4,6 +4,7 @@
 #include "stack.hpp"
 
 namespace my {
+
     template<class T>
     class list_link : public list<T>, public stack<T> {
 
@@ -28,9 +29,11 @@ namespace my {
 
             element *rec;
 
+            iterator(element *p) : rec(p) {}
+
         public:
 
-            iterator(element *p) : rec(p) {}
+            friend my::list_link<T>;
 
             iterator() : rec(nullptr) {}
 
@@ -63,12 +66,12 @@ namespace my {
             }
 
             bool operator!=(const my::iterator<T> &it) noexcept(false) override {
-                const auto i = dynamic_cast<const my::list_link<T>::iterator&>(it);
+                const auto i = dynamic_cast<const my::list_link<T>::iterator &>(it);
                 return i.rec != this->rec;
             }
 
             bool operator==(const my::iterator<T> &it) override {
-                const auto i = dynamic_cast<const my::list_link<T>::iterator&>(it);
+                const auto i = dynamic_cast<const my::list_link<T>::iterator &>(it);
                 return i.rec == this->rec;
             }
 
@@ -289,6 +292,31 @@ namespace my {
         }
 
     public:
+
+        class iterator {
+
+            T *rec;
+
+            iterator(T *p) : rec(p) {}
+
+        public:
+
+            friend list_array<T>;
+
+            iterator() : rec(nullptr) {}
+
+            T *operator->() {
+                return rec;
+            }
+
+            T &operator*() {
+                return *this;
+            }
+
+
+        };
+
+
         explicit list_array(size_t cap = 64) : data(nullptr), len(0), cap(cap), increment(64) {
             data = new T[this->cap + increment];
         }
