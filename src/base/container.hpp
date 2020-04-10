@@ -295,22 +295,59 @@ namespace my {
 
         class iterator {
 
-            T *rec;
+            T *zero;
+            size_t size;
+            size_t loc;
 
-            iterator(T *p) : rec(p) {}
+            iterator(T *zero_, size_t size_, size_t loc_) : zero(zero_), size(size_), loc(loc_) {}
 
         public:
 
-            friend list_array<T>;
+            friend my::list_array<T>;
 
-            iterator() : rec(nullptr) {}
+            iterator() : zero(nullptr), size(0U), loc(0U) {}
 
             T *operator->() {
-                return rec;
+                return zero + loc;
             }
 
             T &operator*() {
+                return *(zero + loc);
+            }
+
+            my::list_array<T>::iterator &operator++() {
+                if (this->loc >= this->size - 1) {
+                    this->zero = nullptr;
+                    this->loc = 0U;
+                } else {
+                    this->loc++;
+                }
                 return *this;
+            }
+
+            my::list_array<T>::iterator &operator--() {
+                if (this->loc == 0U) {
+                    this->zero = nullptr;
+                } else {
+                    this->loc--;
+                }
+                return *this;
+            }
+
+            my::list_array<T>::iterator &operator++(int) {
+                return ++(*this);
+            }
+
+            my::list_array<T>::iterator &operator--(int) {
+                return --(*this);
+            }
+
+            bool operator==(const my::list_array<T>::iterator &it) {
+                return this->zero == it.zero && this->loc == it.loc;
+            }
+
+            bool operator!=(const my::list_array<T>::iterator &it) {
+                return this->zero != it.zero || this->loc != it.loc;
             }
 
 
@@ -416,6 +453,14 @@ namespace my {
 
         T &peek() override {
             return this->get_back();
+        }
+
+        my::list_array<T>::iterator begin() {
+            return my::list_array<T>::iterator(this->data, this->len, 0U);
+        }
+
+        my::list_array<T>::iterator end() {
+            return my::list_array<T>::iterator();
         }
     };
 
