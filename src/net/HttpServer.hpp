@@ -13,6 +13,10 @@ namespace my {
 
         }
 
+        ~HttpServer(){
+
+        }
+
         void start() override {
 
             Server::start();

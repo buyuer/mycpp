@@ -7,7 +7,21 @@ namespace my {
     class Server {
 
     public:
-        using user_handler = void (*)(const std::vector<char> &);
+
+        class sock_info {
+            int s;
+        public:
+            std::string ip;
+            int port;
+
+            void close() const {
+                ::close(s);
+            }
+
+            sock_info(int s_) : s(s_) {}
+        };
+
+        using user_handler = void (*)(std::iostream &, const sock_info &);
 
         user_handler handler;
 
@@ -35,8 +49,6 @@ namespace my {
 
         func handler_thread = [](std::map<int, element> *es_, const int sock_, const user_handler handler_) -> void {
 
-            //std::cout << "handler_thread is called" << std::endl;
-
             while (true) {
 
                 auto it = es_->find(sock_);
@@ -51,22 +63,11 @@ namespace my {
                 std::unique_lock<std::mutex> ul(it->second.m);
                 it->second.cv.wait(ul);
 
-                std::vector<char> data;
-                data.reserve(1024);
-                std::vector<char> buffer(1024);
+                my::socketbuff sbuff(sock_, sock_);
+                std::iostream io(&sbuff);
+                sock_info sockInfo(sock_);
 
-                while (int count = ::recv(sock_, buffer.data(), 1024, ::MSG_DONTWAIT) != 0) {
-
-                    if (count == -1) {
-                        std::perror("recv failed");
-                        it->second.run = false;
-                        goto end;
-                    } else if (count > 0) {
-                        data.insert(data.end(), buffer.begin(), buffer.begin() + count);
-                    }
-                }
-
-                handler_(data);
+                handler_(io, sockInfo);
 
                 it->second.run = false;
             }
@@ -84,7 +85,7 @@ namespace my {
         static bool addfd2epoll(int epfd, int fd) {
             ::epoll_event ev;
             //监听事件：读、写、错误、边缘触发模式（ET）、关闭事件
-            ev.events = ::EPOLLIN | ::EPOLLET | ::EPOLLERR | ::EPOLLRDHUP | ::EPOLLHUP | ::EPOLLOUT;
+            ev.events = ::EPOLLIN | ::EPOLLERR | ::EPOLLRDHUP | ::EPOLLHUP | ::EPOLLOUT;
             ev.data.fd = fd;
             if (::epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1) {
                 perror("epoll add failed");
@@ -115,8 +116,12 @@ namespace my {
             }
             evs = new epoll_event[MAX_EVENT];
 
-            handler = [](const std::vector<char>& data) -> void {
-                std::cout << data.size() << std::endl;
+            handler = [](std::iostream &io, const sock_info &sockInfo) -> void {
+                std::string line;
+                getline(io, line);
+                std::cout << line << std::endl;
+                io << "HTTP/1.1 200 OK\r\n\r\n" << std::flush;
+                sockInfo.close();
             };
         }
 

@@ -4,7 +4,7 @@ using namespace my;
 
 int main() {
 
-    list<int> &a = *new list_link<int>();
+    /*list<int> &a = *new list_link<int>();
     list<int> &b = *new list_array<int>();
 
     list_array<int> c;
@@ -17,11 +17,9 @@ int main() {
 
     for(auto &i : c){
         std::cout << i << std::endl;
-    }
+    }*/
 
-    Socket sock = Socket(Socket::IPV4);
-
-    Server httpServer(9999);
+    Server httpServer(9997);
 
     httpServer.start();
 
