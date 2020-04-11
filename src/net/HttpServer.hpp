@@ -19,13 +19,13 @@ namespace my {
     public:
 
         HttpServer(int port) : Server(port) {
-            this->handler = [](std::iostream& io_, const sock_info& sockInfo){
-                std::cout << sockInfo.ip <<":" << sockInfo.port << std::endl;
+            this->handler = [](my::Socket client_){
+                std::cout << client_.get_ip() <<":" << client_.get_port() << std::endl;
                 std::string line;
-                getline(io_, line);
+                getline(client_.io(), line);
                 std::cout << line << std::endl;
-                io_ << "HTTP/1.1 200 OK\r\n\r\n" << std::flush;
-                sockInfo.close();
+                client_.io() << "HTTP/1.1 200 OK\r\n\r\n" << std::flush;
+                client_.close();
             };
         }
 

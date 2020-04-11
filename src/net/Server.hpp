@@ -25,7 +25,7 @@ namespace my {
             sock_info(int s_) : sockfd(s_) {}
         };
 
-        using user_handler = void (*)(std::iostream &, const sock_info &);
+        using user_handler = void (*)(my::Socket);
 
         user_handler handler;
 
@@ -49,14 +49,14 @@ namespace my {
             }
         };
 
-        using func = void (*)(std::map<int, element> *, const sock_info, const user_handler);
+        using func = void (*)(std::map<int, element> *, my::Socket, const user_handler);
 
-        func handler_thread = [](std::map<int, element> *es_, const sock_info sockInfo,
+        func handler_thread = [](std::map<int, element> *es_, my::Socket client_,
                                  const user_handler handler_) -> void {
 
             while (true) {
 
-                auto it = es_->find(sockInfo.get_sockfd());
+                auto it = es_->find(client_.get_socket());
 
                 if (it == es_->end()) {
                     it->second.run = false;
@@ -68,10 +68,10 @@ namespace my {
                 std::unique_lock<std::mutex> ul(it->second.m);
                 it->second.cv.wait(ul);
 
-                my::socketbuff buff(sockInfo.get_sockfd(), sockInfo.get_sockfd());
+                my::socketbuff buff(client_.get_socket(), client_.get_socket());
                 std::iostream io(&buff);
 
-                handler_(io, sockInfo);
+                handler_(client_);
 
                 it->second.run = false;
             }
@@ -124,11 +124,11 @@ namespace my {
             }
             evs = new epoll_event[MAX_EVENT];
 
-            handler = [](std::iostream &io, const sock_info &sockInfo) -> void {
+            handler = [](my::Socket client_) -> void {
                 std::string str("my Server");
                 std::cout << str << std::endl;
-                io << str << std::flush;
-                sockInfo.close();
+                client_.io() << str << std::flush;
+                client_.close();
             };
         }
 
@@ -175,7 +175,7 @@ namespace my {
                     }
                         //新请求
                     else if (evs[i].events & ::EPOLLIN && evs[i].data.fd == listen_socket.get_socket()) {
-                        sockaddr_in client;
+                        /*sockaddr_in client;
                         socklen_t len = sizeof(client);
                         int cfd = ::accept(listen_socket.get_socket(), (sockaddr *) (&client), &len);
                         if (cfd == -1) {
@@ -183,16 +183,15 @@ namespace my {
                             continue;
                         }
                         char addr[30] = {0};
-                        inet_ntop(Socket::IPV4, &client, addr, sizeof(client));
+                        inet_ntop(Socket::IPV4, &client, addr, sizeof(client));*/
 
-                        if (addfd2epoll(this->epfd, cfd)) {
-                            auto[it, flag] = elements.insert(std::pair<int, element>(cfd, element()));
+                        my::Socket client = this->listen_socket.accept();
+
+                        if (addfd2epoll(this->epfd, client.get_socket())) {
+                            auto[it, flag] = elements.insert(std::pair<int, element>(client.get_socket(), element()));
                             if (flag) {
-                                sock_info sockInfo(cfd);
-                                std::string ip(addr, std::strlen(addr));
-                                sockInfo.ip = std::move(ip);
-                                sockInfo.port = client.sin_port;
-                                it->second.t = std::thread(handler_thread, &elements, sockInfo, handler);
+
+                                it->second.t = std::thread(handler_thread, &elements, client, handler);
                                 it->second.t.detach();
                             }
                         }

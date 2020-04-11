@@ -37,7 +37,7 @@ namespace my {
             ~element() {
 
 #ifdef USE_LINUX
-                close(socket_fd);
+                ::close(socket_fd);
                 sockbuf.dis_init();
 #endif
             }
@@ -157,6 +157,10 @@ namespace my {
 
             int client_socket = ::accept(sock->socket_fd, (sockaddr *) &(temp.sock->addr), &addr_len);
 
+            if(client_socket == -1){
+                perror("accept failed");
+            }
+
             char ipbuff[64];
             inet_ntop(this->sock->af, &(temp.sock->addr), ipbuff, addr_len);
             std::string ip(ipbuff, std::strlen(ipbuff));
@@ -185,7 +189,11 @@ namespace my {
             }
         }
 
-        int get_socket() {
+        void close(){
+            ::close(this->sock->socket_fd);
+        }
+
+        inline int get_socket() {
             return sock->socket_fd;
         }
 
