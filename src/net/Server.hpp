@@ -111,9 +111,13 @@ namespace my {
 
     public:
 
-        Server(int port) :
-                listen_socket(Socket::IPV4), epfd(-1), evs(nullptr), handler(nullptr) {
-            listen_socket.bind("127.0.0.1", port);
+        Server(int port, my::Socket::TYPE af = my::Socket::IPV4) :
+                listen_socket(af), epfd(-1), evs(nullptr), handler(nullptr) {
+            if (af == my::Socket::IPV4) {
+                listen_socket.bind("127.0.0.1", port);
+            } else if (af == my::Socket::IPV6) {
+                listen_socket.bind("::1", port);
+            }
             if ((epfd = ::epoll_create(MAX_EVENT)) == -1) {
                 perror("epoll_create failed");
                 exit(0);
