@@ -194,6 +194,14 @@ namespace my {
         std::iostream &io() {
             return sock->io;
         }
+
+        std::string& get_ip(){
+            return this->sock->ip;
+        }
+
+        int get_port(){
+            return this->sock->port;
+        }
     };
 }
 
