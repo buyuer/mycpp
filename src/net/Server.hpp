@@ -9,16 +9,20 @@ namespace my {
     public:
 
         class sock_info {
-            int s;
+            int sockfd;
         public:
             std::string ip;
             int port;
 
             void close() const {
-                ::close(s);
+                ::close(sockfd);
             }
 
-            sock_info(int s_) : s(s_) {}
+            int get_sockfd() const {
+                return this->sockfd;
+            }
+
+            sock_info(int s_) : sockfd(s_) {}
         };
 
         using user_handler = void (*)(std::iostream &, const sock_info &);
@@ -45,13 +49,14 @@ namespace my {
             }
         };
 
-        using func = void (*)(std::map<int, element> *, const int, const user_handler);
+        using func = void (*)(std::map<int, element> *, const sock_info, const user_handler);
 
-        func handler_thread = [](std::map<int, element> *es_, const int sockfd_, const user_handler handler_) -> void {
+        func handler_thread = [](std::map<int, element> *es_, const sock_info sockInfo,
+                                 const user_handler handler_) -> void {
 
             while (true) {
 
-                auto it = es_->find(sockfd_);
+                auto it = es_->find(sockInfo.get_sockfd());
 
                 if (it == es_->end()) {
                     it->second.run = false;
@@ -63,9 +68,8 @@ namespace my {
                 std::unique_lock<std::mutex> ul(it->second.m);
                 it->second.cv.wait(ul);
 
-                my::socketbuff buff(sockfd_, sockfd_);
+                my::socketbuff buff(sockInfo.get_sockfd(), sockInfo.get_sockfd());
                 std::iostream io(&buff);
-                sock_info sockInfo(sockfd_);
 
                 handler_(io, sockInfo);
 
@@ -75,7 +79,7 @@ namespace my {
             return;
         };
 
-        Socket sock;
+        Socket listen_socket;
         std::map<int, element> elements;
 
         int epfd;
@@ -108,8 +112,8 @@ namespace my {
     public:
 
         Server(int port) :
-                sock(Socket::IPV4), epfd(-1), evs(nullptr) {
-            sock.bind("127.0.0.1", port);
+                listen_socket(Socket::IPV4), epfd(-1), evs(nullptr), handler(nullptr) {
+            listen_socket.bind("127.0.0.1", port);
             if ((epfd = ::epoll_create(MAX_EVENT)) == -1) {
                 perror("epoll_create failed");
                 exit(0);
@@ -117,10 +121,9 @@ namespace my {
             evs = new epoll_event[MAX_EVENT];
 
             handler = [](std::iostream &io, const sock_info &sockInfo) -> void {
-                std::string line;
-                getline(io, line);
-                std::cout << line << std::endl;
-                io << "HTTP/1.1 200 OK\r\n\r\n" << std::flush;
+                std::string str("my Server");
+                std::cout << str << std::endl;
+                io << str << std::flush;
                 sockInfo.close();
             };
         }
@@ -136,11 +139,11 @@ namespace my {
         }
 
         virtual void start() {
-            sock.listen();
+            listen_socket.listen();
 
             epoll_event ev;
             ev.events = ::EPOLLIN | ::EPOLLET | ::EPOLLERR;
-            ev.data.fd = sock.get_socket();
+            ev.data.fd = listen_socket.get_socket();
 
             if (::epoll_ctl(epfd, EPOLL_CTL_ADD, ev.data.fd, &ev) == -1) {
                 perror("epoll_ctl failed");
@@ -161,28 +164,31 @@ namespace my {
                             it->second.cv.notify_all();
                             elements.erase(it);
                         }
-                        if (evs[i].data.fd == sock.get_socket()) {
+                        if (evs[i].data.fd == listen_socket.get_socket()) {
                             perror("server socket err");
                             break;
                         }
                     }
                         //新请求
-                    else if (evs[i].events & ::EPOLLIN && evs[i].data.fd == sock.get_socket()) {
+                    else if (evs[i].events & ::EPOLLIN && evs[i].data.fd == listen_socket.get_socket()) {
                         sockaddr_in client;
                         socklen_t len = sizeof(client);
-                        int cfd = ::accept(sock.get_socket(), (sockaddr *) (&client), &len);
+                        int cfd = ::accept(listen_socket.get_socket(), (sockaddr *) (&client), &len);
                         if (cfd == -1) {
                             perror("accept failed");
                             continue;
                         }
                         char addr[30] = {0};
                         inet_ntop(Socket::IPV4, &client, addr, sizeof(client));
-                        printf("get connection from: %s\n", addr);
 
                         if (addfd2epoll(this->epfd, cfd)) {
                             auto[it, flag] = elements.insert(std::pair<int, element>(cfd, element()));
                             if (flag) {
-                                it->second.t = std::thread(handler_thread, &elements, it->first, handler);
+                                sock_info sockInfo(cfd);
+                                std::string ip(addr, std::strlen(addr));
+                                sockInfo.ip = std::move(ip);
+                                sockInfo.port = client.sin_port;
+                                it->second.t = std::thread(handler_thread, &elements, sockInfo, handler);
                                 it->second.t.detach();
                             }
                         }

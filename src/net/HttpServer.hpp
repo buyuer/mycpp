@@ -19,7 +19,14 @@ namespace my {
     public:
 
         HttpServer(int port) : Server(port) {
-
+            this->handler = [](std::iostream& io_, const sock_info& sockInfo){
+                std::cout << sockInfo.ip <<":" << sockInfo.port << std::endl;
+                std::string line;
+                getline(io_, line);
+                std::cout << line << std::endl;
+                io_ << "HTTP/1.1 200 OK\r\n\r\n" << std::flush;
+                sockInfo.close();
+            };
         }
 
         virtual ~HttpServer() {
@@ -30,7 +37,7 @@ namespace my {
             Server::start();
         }
 
-        virtual void set_route(std::string path, route_handler routeHandler){
+        virtual void add_route(std::string path, route_handler routeHandler){
             route[path] = routeHandler;
         }
     };

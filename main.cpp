@@ -19,7 +19,7 @@ int main() {
         std::cout << i << std::endl;
     }*/
 
-    Server httpServer(9997);
+    HttpServer httpServer(9997);
 
     httpServer.start();
 
