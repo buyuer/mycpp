@@ -5,7 +5,16 @@
 
 namespace my {
 
-    class HttpServer : public Server{
+    class HttpServer : public Server {
+
+    public:
+
+        using route_handler = void (*)(my::HttpRequest &, my::HttpResponse &);
+
+    private:
+
+        std::map<std::string, route_handler> route;
+
 
     public:
 
@@ -13,14 +22,16 @@ namespace my {
 
         }
 
-        ~HttpServer(){
+        virtual ~HttpServer() {
 
         }
 
-        void start() override {
-
+        virtual void start() override {
             Server::start();
+        }
 
+        virtual void set_route(std::string path, route_handler routeHandler){
+            route[path] = routeHandler;
         }
     };
 }

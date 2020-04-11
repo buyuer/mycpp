@@ -47,11 +47,11 @@ namespace my {
 
         using func = void (*)(std::map<int, element> *, const int, const user_handler);
 
-        func handler_thread = [](std::map<int, element> *es_, const int sock_, const user_handler handler_) -> void {
+        func handler_thread = [](std::map<int, element> *es_, const int sockfd_, const user_handler handler_) -> void {
 
             while (true) {
 
-                auto it = es_->find(sock_);
+                auto it = es_->find(sockfd_);
 
                 if (it == es_->end()) {
                     it->second.run = false;
@@ -63,9 +63,9 @@ namespace my {
                 std::unique_lock<std::mutex> ul(it->second.m);
                 it->second.cv.wait(ul);
 
-                my::socketbuff sbuff(sock_, sock_);
-                std::iostream io(&sbuff);
-                sock_info sockInfo(sock_);
+                my::socketbuff buff(sockfd_, sockfd_);
+                std::iostream io(&buff);
+                sock_info sockInfo(sockfd_);
 
                 handler_(io, sockInfo);
 
