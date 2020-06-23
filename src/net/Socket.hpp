@@ -20,10 +20,9 @@ namespace my {
 
         struct element {
             int rec_num;
-#ifdef USE_LINUX
             int socket_fd;
             sockaddr_in6 addr;
-#endif
+
             socketbuff sockbuf;
             std::iostream io;
             std::string ip;
@@ -35,11 +34,8 @@ namespace my {
             }
 
             ~element() {
-
-#ifdef USE_LINUX
                 ::close(socket_fd);
                 sockbuf.dis_init();
-#endif
             }
         };
 
@@ -93,8 +89,6 @@ namespace my {
                 delete sock;
             }
         }
-
-#ifdef USE_LINUX
 
     public:
 
@@ -196,8 +190,6 @@ namespace my {
         inline int get_socket() {
             return sock->socket_fd;
         }
-
-#endif
 
         std::iostream &io() {
             return sock->io;
