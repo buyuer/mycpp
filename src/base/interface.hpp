@@ -17,6 +17,10 @@
 #include <vector>
 #include <unordered_map>
 #include <map>
+#include <queue>
+#include <deque>
+#include <list>
+#include <forward_list>
 #include <thread>
 #include <mutex>
 #include <atomic>

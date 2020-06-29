@@ -6,3 +6,6 @@
 #include "list.hpp"
 #include "stack.hpp"
 #include "container.hpp"
+
+#include "semaphore.hpp"
+#include "threadpool.hpp"
