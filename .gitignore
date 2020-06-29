@@ -8,5 +8,5 @@
 /out
 CMakeSettings.json
 
-/main.cpp
+main.cpp
 
