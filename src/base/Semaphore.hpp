@@ -4,7 +4,7 @@
 
 namespace my{
 
-    class semaphore{
+    class Semaphore{
 
     private:
         s64 count;
@@ -14,11 +14,11 @@ namespace my{
 
     public:
 
-        semaphore(s64 count_):count(count_){
+        Semaphore(s64 count_): count(count_){
 
         }
 
-        ~semaphore(){
+        ~Semaphore(){
 
         }
 

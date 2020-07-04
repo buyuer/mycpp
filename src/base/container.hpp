@@ -1,7 +1,7 @@
 #pragma once
 
-#include "list.hpp"
-#include "stack.hpp"
+#include "base/list.hpp"
+#include "base/stack.hpp"
 
 namespace my {
 

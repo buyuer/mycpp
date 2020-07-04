@@ -7,5 +7,5 @@
 #include "stack.hpp"
 #include "container.hpp"
 
-#include "semaphore.hpp"
+#include "Semaphore.hpp"
 #include "ThreadPool.hpp"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "interface.hpp"
+#include "base/interface.hpp"
 
 namespace my {
 
