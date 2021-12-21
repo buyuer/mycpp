@@ -21,7 +21,10 @@
 #include <deque>
 #include <list>
 #include <forward_list>
+#include <functional>
+#include <utility>
 #include <thread>
+#include <future>
 #include <mutex>
 #include <atomic>
 #include <condition_variable>

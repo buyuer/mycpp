@@ -6,10 +6,9 @@ namespace my{
 
     class ThreadPool{
 
-    public:
-        using Worker = void (*)(void);
-
     private:
+
+        using Worker = void (*)(void);
 
         struct element{
             Worker f;
@@ -51,12 +50,16 @@ namespace my{
             }
         }
 
-        void run(my::ThreadPool::Worker f_){
-            element e{f_};
+        template<typename Runable, typename ...Args>
+        void run(Runable runable, Args ...args){
+            /*my::ThreadPool::Worker f_ = [=](void)->void{
+                runable(args...);
+            };*/
+            /*element e{f_};
             std::unique_lock<std::mutex> ul(this->m_tasks);
             this->tasks.push(e);
             ul.unlock();
-            this->cv.notify_one();
+            this->cv.notify_one();*/
         }
 
     };
