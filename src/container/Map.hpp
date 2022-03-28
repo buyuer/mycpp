@@ -114,8 +114,11 @@ public:
     size_type erase(const KEY& key)
     {
         auto ret = this->find(key);
-        data_.erase(ret);
-        return 1;
+        if (ret != this->end()) {
+            data_.erase(ret);
+            return 1;
+        }
+        return 0;
     }
 
     iterator find(const KEY& key)
