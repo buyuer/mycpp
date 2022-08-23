@@ -3,8 +3,9 @@ project(mycpp)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread")
+find_package(Threads)
 
-include_directories(src/)
+include_directories(mycpp/)
 
 add_executable(mycpp main.cpp)
+target_link_libraries(mycpp ${CMAKE_THREAD_LIBS_INIT})
