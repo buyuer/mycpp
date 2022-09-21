@@ -1,20 +1,23 @@
 #pragma once
 
-namespace my {
+namespace my
+{
 
-    template<class T>
-    class stack {
-    public:
+template <class T> class stack
+{
+  public:
+    stack()
+    {
+    }
 
-        stack() {}
+    virtual ~stack()
+    {
+    }
 
-        virtual ~stack() {}
+    virtual void push(const T &) = 0;
 
-        virtual void push(const T&) = 0;
+    virtual T pop() = 0;
 
-        virtual T pop() = 0;
-
-        virtual T &peek() = 0;
-
-    };
-}
+    virtual T &peek() = 0;
+};
+} // namespace my

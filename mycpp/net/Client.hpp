@@ -1,9 +1,10 @@
 #pragma once
 
-namespace my{
+namespace my
+{
 
-    class Client{
+class Client
+{
+};
 
-    };
-
-}
+} // namespace my

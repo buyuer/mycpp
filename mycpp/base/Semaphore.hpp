@@ -2,34 +2,33 @@
 
 #include "base/interface.hpp"
 
-namespace my{
+namespace my
+{
 
-    class Semaphore{
+class Semaphore
+{
 
-    private:
-        s64 count;
-        std::mutex m;
-        std::condition_variable cv;
+  private:
+    s64                     count;
+    std::mutex              m;
+    std::condition_variable cv;
 
+  public:
+    Semaphore(s64 count_) : count(count_)
+    {
+    }
 
-    public:
+    ~Semaphore()
+    {
+    }
 
-        Semaphore(s64 count_): count(count_){
+    void release(s64 update = 0)
+    {
+    }
 
-        }
+    void acquire()
+    {
+    }
+};
 
-        ~Semaphore(){
-
-        }
-
-        void release(s64 update = 0){
-
-        }
-
-        void acquire(){
-
-        }
-
-    };
-
-}
+} // namespace my
