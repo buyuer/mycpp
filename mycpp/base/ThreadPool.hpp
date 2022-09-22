@@ -7,15 +7,15 @@ namespace mycpp
 
 class ThreadPool
 {
-
   private:
     using ThreadID = std::thread::id;
-    using Worker   = void (*)(void *);
 
-    struct element
+    struct Runner
     {
-        Worker f;
-        void  *arg;
+        using Entry = void (*)(void *);
+
+        Entry entry;
+        void *arg;
     };
 
     enum Flag : uint32_t
@@ -24,11 +24,11 @@ class ThreadPool
         FLAG_EXIT = 0x01,
     };
 
-    std::mutex                m_tasks;
-    std::mutex                m_cv;
+    std::mutex                mu_runners;
+    std::mutex                mu_cv;
     std::condition_variable   cv;
-    std::queue<element>       tasks;
-    std::vector<std::jthread> pool;
+    std::queue<Runner>        runners;
+    std::vector<std::jthread> thread_pool;
     uint32_t                  flags{};
 
     static void thread_entry(ThreadPool *own)
@@ -40,27 +40,26 @@ class ThreadPool
                 return;
             }
 
-            std::unique_lock<std::mutex> ul(own->m_tasks);
-            if (own->tasks.empty())
+            std::unique_lock<std::mutex> ul(own->mu_runners);
+            if (own->runners.empty())
             {
-                std::unique_lock<std::mutex> ul_cv(own->m_cv);
+                std::unique_lock<std::mutex> ul_cv(own->mu_cv);
                 ul.unlock();
                 own->cv.wait(ul_cv);
             }
             else
             {
-                auto   temp = own->tasks.back();
-                Worker now  = temp.f;
-                own->tasks.pop();
+                auto runner{own->runners.back()};
+                own->runners.pop();
                 ul.unlock();
-                now(temp.arg);
+                runner.entry(runner.arg);
             }
         }
     }
 
     void destroy()
     {
-        for (auto &t : pool)
+        for (auto &t : thread_pool)
         {
             auto stop  = t.get_stop_source();
             auto token = t.get_stop_token();
@@ -76,11 +75,12 @@ class ThreadPool
   public:
     explicit ThreadPool(uint32_t count = std::thread::hardware_concurrency())
     {
-        pool.reserve(count);
+        thread_pool.reserve(count);
 
         for (uint32_t i = 0; i < count; i++)
         {
-            auto &t = pool.emplace_back(std::jthread(thread_entry, this));
+            auto &t =
+                thread_pool.emplace_back(std::jthread(thread_entry, this));
             t.detach();
         }
     }
@@ -90,10 +90,18 @@ class ThreadPool
         destroy();
     };
 
-    void run(Worker worker, void *arg)
+    ThreadPool(const ThreadPool &)            = delete;
+    ThreadPool(ThreadPool &&)                 = delete;
+    ThreadPool &operator=(const ThreadPool &) = delete;
+    ThreadPool &operator=(ThreadPool &&)      = delete;
+
+    void run(Runner::Entry entry, void *arg)
     {
-        std::unique_lock<std::mutex> ul(this->m_tasks);
-        tasks.push({.f = worker, .arg = arg});
+        std::unique_lock<std::mutex> ul(this->mu_runners);
+        runners.emplace(ThreadPool::Runner{
+            .entry = entry,
+            .arg   = arg,
+        });
         ul.unlock();
         cv.notify_one();
     }

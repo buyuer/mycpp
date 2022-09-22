@@ -10,13 +10,13 @@ int main(int argc, char **argv)
     {
         pool.run(
             [](void *) -> void {
-                std::this_thread::sleep_for(2s);
+                std::this_thread::sleep_for(1s);
                 std::cout << "hahaha" << std::endl;
             },
             nullptr);
     }
 
-    std::this_thread::sleep_for(5s);
+    std::this_thread::sleep_for(100s);
 
     return 0;
 }
