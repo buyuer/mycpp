@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/base.hpp"
+#include "mycpp/base/base.hpp"
 
-namespace my
+namespace mycpp
 {
 
 class Serial : public std::iostream
@@ -111,4 +111,4 @@ class Serial : public std::iostream
         }
     }
 };
-} // namespace my
+} // namespace mycpp

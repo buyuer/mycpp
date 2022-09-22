@@ -1,6 +1,6 @@
 #pragma once
 
-#include "algo/algo.hpp"
-#include "base/base.hpp"
-#include "net/net.hpp"
-#include "utility/utility.hpp"
+#include "mycpp/algo/algo.hpp"
+#include "mycpp/base/base.hpp"
+#include "mycpp/net/net.hpp"
+#include "mycpp/utility/utility.hpp"

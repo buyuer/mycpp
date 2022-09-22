@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/base.hpp"
+#include "mycpp/base/base.hpp"
 
-namespace my
+namespace mycpp
 {
 
 class Socket
@@ -34,7 +34,7 @@ class Socket
 
         element()
             : rec_num(0), socket_fd(0), io(&sockbuf), port(0),
-              af(my::Socket::IPV4)
+              af(mycpp::Socket::IPV4)
         {
             memset(&addr, 0, sizeof(sockaddr_in6));
         }
@@ -166,16 +166,16 @@ class Socket
         }
     }
 
-    my::Socket accept()
+    mycpp::Socket accept()
     {
 
-        my::Socket  temp;
+        mycpp::Socket  temp;
         ::socklen_t addr_len;
-        if (this->sock->af == my::Socket::IPV4)
+        if (this->sock->af == mycpp::Socket::IPV4)
         {
             addr_len = sizeof(::sockaddr_in);
         }
-        else if (this->sock->af == my::Socket::IPV6)
+        else if (this->sock->af == mycpp::Socket::IPV6)
         {
             addr_len = sizeof(::sockaddr_in6);
         }
@@ -243,13 +243,13 @@ class Socket
         return this->sock->port;
     }
 };
-} // namespace my
+} // namespace mycpp
 
 #ifdef USE_WIN32
 
 #pragma comment(lib, "ws2_32.lib")
 
-namespace my
+namespace mycpp
 {
 
 class WinSocket
@@ -468,6 +468,6 @@ class WinSocket
     }
 };
 
-} // namespace my
+} // namespace mycpp
 
 #endif

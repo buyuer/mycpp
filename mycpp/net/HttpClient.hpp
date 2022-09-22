@@ -1,8 +1,8 @@
 #pragma once
 
-namespace my
+namespace mycpp
 {
 class HttpClient
 {
 };
-} // namespace my
+} // namespace mycpp

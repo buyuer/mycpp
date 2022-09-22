@@ -1,9 +1,9 @@
 #pragma once
 
-#include "base/list.hpp"
-#include "base/stack.hpp"
+#include "mycpp/base/list.hpp"
+#include "mycpp/base/stack.hpp"
 
-namespace my
+namespace mycpp
 {
 
 template <class T> class list_link : public list<T>, public stack<T>
@@ -25,7 +25,7 @@ template <class T> class list_link : public list<T>, public stack<T>
     element *tail;
 
   public:
-    class iterator : public my::iterator<T>
+    class iterator : public mycpp::iterator<T>
     {
 
         element *rec;
@@ -35,31 +35,31 @@ template <class T> class list_link : public list<T>, public stack<T>
         }
 
       public:
-        friend my::list_link<T>;
+        friend mycpp::list_link<T>;
 
         iterator() : rec(nullptr)
         {
         }
 
-        my::list_link<T>::iterator &operator++() override
+        mycpp::list_link<T>::iterator &operator++() override
         {
             rec = rec->next;
             return *this;
         }
 
-        my::list_link<T>::iterator &operator--() override
+        mycpp::list_link<T>::iterator &operator--() override
         {
             rec = rec->last;
             return *this;
         }
 
-        my::list_link<T>::iterator &operator++(int i) override
+        mycpp::list_link<T>::iterator operator++(int i) override
         {
             rec = rec->next;
             return *this;
         }
 
-        my::list_link<T>::iterator &operator--(int i) override
+        mycpp::list_link<T>::iterator &operator--(int i) override
         {
             rec = rec->last;
             return *this;
@@ -75,23 +75,23 @@ template <class T> class list_link : public list<T>, public stack<T>
             return &(rec->value);
         }
 
-        bool operator!=(const my::iterator<T> &it) noexcept(false) override
+        bool operator!=(const mycpp::iterator<T> &it) noexcept(false) override
         {
-            const auto i = dynamic_cast<const my::list_link<T>::iterator &>(it);
+            const auto i = dynamic_cast<const mycpp::list_link<T>::iterator &>(it);
             return i.rec != this->rec;
         }
 
-        bool operator==(const my::iterator<T> &it) override
+        bool operator==(const mycpp::iterator<T> &it) override
         {
-            const auto i = dynamic_cast<const my::list_link<T>::iterator &>(it);
+            const auto i = dynamic_cast<const mycpp::list_link<T>::iterator &>(it);
             return i.rec == this->rec;
         }
 
-        /*bool operator!=(const my::list_link<T>::iterator &b) const {
+        /*bool operator!=(const mycpp::list_link<T>::iterator &b) const {
             return b.rec != this->rec;
         }*/
 
-        /*bool operator==(const my::list_link<T>::iterator &b) const {
+        /*bool operator==(const mycpp::list_link<T>::iterator &b) const {
             return b.rec == this->rec;
         }*/
     };
@@ -294,12 +294,12 @@ template <class T> class list_link : public list<T>, public stack<T>
         return size == 0;
     }
 
-    my::list_link<T>::iterator begin()
+    mycpp::list_link<T>::iterator begin()
     {
         return iterator(head);
     }
 
-    my::list_link<T>::iterator end()
+    mycpp::list_link<T>::iterator end()
     {
         return iterator(nullptr);
     }
@@ -360,7 +360,7 @@ template <class T> class list_array : public list<T>, public stack<T>
         }
 
       public:
-        friend my::list_array<T>;
+        friend mycpp::list_array<T>;
 
         iterator() : zero(nullptr), size(0U), loc(0U)
         {
@@ -376,7 +376,7 @@ template <class T> class list_array : public list<T>, public stack<T>
             return *(zero + loc);
         }
 
-        my::list_array<T>::iterator &operator++()
+        mycpp::list_array<T>::iterator &operator++()
         {
             if (this->loc >= this->size - 1)
             {
@@ -390,7 +390,7 @@ template <class T> class list_array : public list<T>, public stack<T>
             return *this;
         }
 
-        my::list_array<T>::iterator &operator--()
+        mycpp::list_array<T>::iterator &operator--()
         {
             if (this->loc == 0U)
             {
@@ -403,22 +403,22 @@ template <class T> class list_array : public list<T>, public stack<T>
             return *this;
         }
 
-        my::list_array<T>::iterator &operator++(int)
+        mycpp::list_array<T>::iterator &operator++(int)
         {
             return ++(*this);
         }
 
-        my::list_array<T>::iterator &operator--(int)
+        mycpp::list_array<T>::iterator &operator--(int)
         {
             return --(*this);
         }
 
-        bool operator==(const my::list_array<T>::iterator &it)
+        bool operator==(const mycpp::list_array<T>::iterator &it)
         {
             return this->zero == it.zero && this->loc == it.loc;
         }
 
-        bool operator!=(const my::list_array<T>::iterator &it)
+        bool operator!=(const mycpp::list_array<T>::iterator &it)
         {
             return this->zero != it.zero || this->loc != it.loc;
         }
@@ -558,18 +558,18 @@ template <class T> class list_array : public list<T>, public stack<T>
         return this->get_back();
     }
 
-    my::list_array<T>::iterator begin()
+    mycpp::list_array<T>::iterator begin()
     {
-        return my::list_array<T>::iterator(this->data, this->len, 0U);
+        return mycpp::list_array<T>::iterator(this->data, this->len, 0U);
     }
 
-    my::list_array<T>::iterator end()
+    mycpp::list_array<T>::iterator end()
     {
-        return my::list_array<T>::iterator();
+        return mycpp::list_array<T>::iterator();
     }
 };
 
 template <class T> class slice
 {
 };
-} // namespace my
+} // namespace mycpp

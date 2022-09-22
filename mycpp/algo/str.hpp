@@ -1,6 +1,9 @@
 #pragma once
 
-namespace my
+#include <string>
+#include <vector>
+
+namespace mycpp
 {
 
 template <class T>
@@ -28,4 +31,4 @@ void split(const std::basic_string<T> &str1, const std::basic_string<T> &str2,
     }
 }
 
-} // namespace my
+} // namespace mycpp

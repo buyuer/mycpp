@@ -1,4 +1,4 @@
 #pragma once
 
-#include "algo/sort.hpp"
-#include "algo/str.hpp"
+#include "sort.hpp"
+#include "str.hpp"

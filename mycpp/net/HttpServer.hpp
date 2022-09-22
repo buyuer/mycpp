@@ -3,14 +3,14 @@
 #include "Http.hpp"
 #include "Server.hpp"
 
-namespace my
+namespace mycpp
 {
 
 class HttpServer : public Server
 {
 
   public:
-    using route_handler = void (*)(my::HttpRequest &, my::HttpResponse &);
+    using route_handler = void (*)(mycpp::HttpRequest &, mycpp::HttpResponse &);
 
   private:
     std::map<std::string, route_handler> route;
@@ -18,7 +18,7 @@ class HttpServer : public Server
   public:
     HttpServer(int port) : Server(port)
     {
-        this->handler = [](my::Socket client_) {
+        this->handler = [](mycpp::Socket client_) {
             std::cout << client_.get_ip() << ":" << client_.get_port()
                       << std::endl;
             std::string line;
@@ -43,4 +43,4 @@ class HttpServer : public Server
         route[path] = routeHandler;
     }
 };
-} // namespace my
+} // namespace mycpp

@@ -11,7 +11,7 @@
  * 6、快速排序
  * */
 
-namespace my
+namespace mycpp
 {
 
 // 冒泡排序
@@ -331,4 +331,4 @@ void QuickSort2(Type *src, size_t length, Compare compare) noexcept
     }
 }
 
-} // namespace my
+} // namespace mycpp

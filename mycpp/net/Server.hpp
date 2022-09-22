@@ -1,8 +1,8 @@
 #pragma once
 
-#include "net/Socket.hpp"
+#include "mycpp/net/Socket.hpp"
 
-namespace my
+namespace mycpp
 {
 
 class Server
@@ -32,7 +32,7 @@ class Server
         }
     };
 
-    using user_handler = void (*)(my::Socket);
+    using user_handler = void (*)(mycpp::Socket);
 
     user_handler handler;
 
@@ -60,10 +60,10 @@ class Server
         }
     };
 
-    using func = void (*)(std::map<int, element> *, my::Socket,
+    using func = void (*)(std::map<int, element> *, mycpp::Socket,
                           const user_handler);
 
-    func handler_thread = [](std::map<int, element> *es_, my::Socket client_,
+    func handler_thread = [](std::map<int, element> *es_, mycpp::Socket client_,
                              const user_handler handler_) -> void {
         while (true)
         {
@@ -81,7 +81,7 @@ class Server
             std::unique_lock<std::mutex> ul(it->second.m);
             it->second.cv.wait(ul);
 
-            my::socketbuff buff(client_.get_socket(), client_.get_socket());
+            mycpp::socketbuff buff(client_.get_socket(), client_.get_socket());
             std::iostream  io(&buff);
 
             handler_(client_);
@@ -127,14 +127,14 @@ class Server
     }
 
   public:
-    Server(int port, my::Socket::TYPE af = my::Socket::IPV4)
+    Server(int port, mycpp::Socket::TYPE af = mycpp::Socket::IPV4)
         : listen_socket(af), epfd(-1), evs(nullptr), handler(nullptr)
     {
-        if (af == my::Socket::IPV4)
+        if (af == mycpp::Socket::IPV4)
         {
             listen_socket.bind("127.0.0.1", port);
         }
-        else if (af == my::Socket::IPV6)
+        else if (af == mycpp::Socket::IPV6)
         {
             listen_socket.bind("::1", port);
         }
@@ -145,7 +145,7 @@ class Server
         }
         evs = new epoll_event[MAX_EVENT];
 
-        handler = [](my::Socket client_) -> void {
+        handler = [](mycpp::Socket client_) -> void {
             std::string str("my Server");
             std::cout << str << std::endl;
             client_.io() << str << std::flush;
@@ -216,7 +216,7 @@ class Server
                     char addr[30] = {0};
                     inet_ntop(Socket::IPV4, &client, addr, sizeof(client));*/
 
-                    my::Socket client = this->listen_socket.accept();
+                    mycpp::Socket client = this->listen_socket.accept();
 
                     if (addfd2epoll(this->epfd, client.get_socket()))
                     {
@@ -261,4 +261,4 @@ class Server
         }
     }
 };
-} // namespace my
+} // namespace mycpp

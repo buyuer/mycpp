@@ -1,6 +1,6 @@
 #pragma once
 
-namespace my
+namespace mycpp
 {
 
 template <class T> class stack
@@ -20,4 +20,4 @@ template <class T> class stack
 
     virtual T &peek() = 0;
 };
-} // namespace my
+} // namespace mycpp

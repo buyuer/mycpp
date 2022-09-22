@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/interface.hpp"
+#include "mycpp/base/interface.hpp"
 
-namespace my
+namespace mycpp
 {
 
 template <class T> class basic_buff : public std::basic_streambuf<T>
@@ -165,4 +165,4 @@ template <class T> class basic_buff : public std::basic_streambuf<T>
 using pipebuff   = basic_buff<char>;
 using socketbuff = basic_buff<char>;
 using serialbuff = basic_buff<char>;
-} // namespace my
+} // namespace mycpp

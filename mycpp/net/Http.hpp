@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/base.hpp"
+#include "mycpp/base/base.hpp"
 
-namespace my
+namespace mycpp
 {
 
 class Http
@@ -27,4 +27,4 @@ class HttpRequest : public Http
 class HttpResponse : public Http
 {
 };
-} // namespace my
+} // namespace mycpp

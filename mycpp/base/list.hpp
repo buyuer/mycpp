@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/iterator.hpp"
+#include "mycpp/base/iterator.hpp"
 
-namespace my
+namespace mycpp
 {
 
 template <class T> class list
@@ -37,4 +37,4 @@ template <class T> class list
     virtual bool is_empty() = 0;
 };
 
-} // namespace my
+} // namespace mycpp

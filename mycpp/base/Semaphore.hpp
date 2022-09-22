@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/interface.hpp"
+#include "mycpp/base/interface.hpp"
 
-namespace my
+namespace mycpp
 {
 
 class Semaphore
@@ -31,4 +31,4 @@ class Semaphore
     }
 };
 
-} // namespace my
+} // namespace mycpp

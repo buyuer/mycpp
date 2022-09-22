@@ -1,6 +1,6 @@
 #pragma once
 
-namespace my
+namespace mycpp
 {
 
 template <class T> class iterator
@@ -10,16 +10,16 @@ template <class T> class iterator
 
     virtual T *operator->() = 0;
 
-    virtual my::iterator<T> &operator++() = 0;
+    virtual mycpp::iterator<T> &operator++() = 0;
 
-    virtual my::iterator<T> &operator--() = 0;
+    virtual mycpp::iterator<T> &operator--() = 0;
 
-    virtual my::iterator<T> &operator++(int) = 0;
+    virtual mycpp::iterator<T> &operator++(int) = 0;
 
-    virtual my::iterator<T> &operator--(int) = 0;
+    virtual mycpp::iterator<T> &operator--(int) = 0;
 
-    virtual bool operator!=(const my::iterator<T> &) noexcept(false) = 0;
+    virtual bool operator!=(const mycpp::iterator<T> &) noexcept(false) = 0;
 
-    virtual bool operator==(const my::iterator<T> &) noexcept(false) = 0;
+    virtual bool operator==(const mycpp::iterator<T> &) noexcept(false) = 0;
 };
-} // namespace my
+} // namespace mycpp

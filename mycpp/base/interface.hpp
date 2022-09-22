@@ -53,7 +53,7 @@
 
 #endif // USE_WIN32
 
-namespace my
+namespace mycpp
 {
 
 using u8  = unsigned char;
@@ -67,4 +67,4 @@ using s64 = long long;
 using f32 = float;
 using f64 = double;
 
-} // namespace my
+} // namespace mycpp

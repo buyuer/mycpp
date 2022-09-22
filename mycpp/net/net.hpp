@@ -1,8 +1,8 @@
 #pragma once
 
-#include "net/Client.hpp"
-#include "net/Http.hpp"
-#include "net/HttpClient.hpp"
-#include "net/HttpServer.hpp"
-#include "net/Server.hpp"
-#include "net/Socket.hpp"
+#include "mycpp/net/Client.hpp"
+#include "mycpp/net/Http.hpp"
+#include "mycpp/net/HttpClient.hpp"
+#include "mycpp/net/HttpServer.hpp"
+#include "mycpp/net/Server.hpp"
+#include "mycpp/net/Socket.hpp"

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "base/interface.hpp"
+#include "mycpp/base/interface.hpp"
 
-namespace my
+namespace mycpp
 {
 
 class ThreadPool
@@ -33,7 +33,6 @@ class ThreadPool
 
     static void thread_entry(ThreadPool *own)
     {
-
         while (true)
         {
             if (own->flags bitand FLAG_EXIT)
@@ -99,4 +98,4 @@ class ThreadPool
         cv.notify_one();
     }
 };
-} // namespace my
+} // namespace mycpp

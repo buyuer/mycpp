@@ -1,10 +1,10 @@
 #pragma once
 
-namespace my
+namespace mycpp
 {
 
 class Client
 {
 };
 
-} // namespace my
+} // namespace mycpp
