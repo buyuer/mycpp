@@ -9,12 +9,12 @@ class Semaphore
 {
 
   private:
-    s64                     count;
+    uint64_t                count;
     std::mutex              m;
     std::condition_variable cv;
 
   public:
-    Semaphore(s64 count_) : count(count_)
+    Semaphore(uint64_t count_) : count(count_)
     {
     }
 
@@ -22,7 +22,7 @@ class Semaphore
     {
     }
 
-    void release(s64 update = 0)
+    void release(uint64_t update = 0)
     {
     }
 

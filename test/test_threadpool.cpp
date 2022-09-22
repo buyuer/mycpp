@@ -4,11 +4,11 @@ using namespace std::chrono_literals;
 
 int main(int argc, char **argv)
 {
-    mycpp::ThreadPool pool;
+    auto pool = new mycpp::ThreadPool(std::thread::hardware_concurrency());
 
     for (size_t index = 0; index < 100; index++)
     {
-        pool.run(
+        pool->run(
             [](void *) -> void {
                 std::this_thread::sleep_for(1s);
                 std::cout << "hahaha" << std::endl;
@@ -16,7 +16,11 @@ int main(int argc, char **argv)
             nullptr);
     }
 
-    std::this_thread::sleep_for(100s);
+    std::this_thread::sleep_for(2s);
+
+    delete pool;
+
+    std::this_thread::sleep_for(2s);
 
     return 0;
 }

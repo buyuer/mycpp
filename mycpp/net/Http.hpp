@@ -14,7 +14,7 @@ class Http
     std::map<std::string, std::string> fields;
     std::string                        body;
 
-    bool parse(const s8 *data)
+    bool parse(const uint8_t *data)
     {
         return false;
     }

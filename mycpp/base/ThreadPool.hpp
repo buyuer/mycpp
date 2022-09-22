@@ -31,15 +31,10 @@ class ThreadPool
     std::vector<std::jthread> thread_pool;
     uint32_t                  flags{};
 
-    static void thread_entry(ThreadPool *own)
+    static void thread_entry(const std::stop_token &token, ThreadPool *own)
     {
-        while (true)
+        while (not token.stop_requested())
         {
-            if (own->flags bitand FLAG_EXIT)
-            {
-                return;
-            }
-
             std::unique_lock<std::mutex> ul(own->mu_runners);
             if (own->runners.empty())
             {
@@ -61,12 +56,10 @@ class ThreadPool
     {
         for (auto &t : thread_pool)
         {
-            auto stop  = t.get_stop_source();
-            auto token = t.get_stop_token();
+            auto source = t.get_stop_source();
+            auto token  = t.get_stop_token();
 
-            std::cout << t.request_stop() << std::endl;
-
-            flags |= FLAG_EXIT;
+            t.request_stop();
 
             cv.notify_all();
         }
