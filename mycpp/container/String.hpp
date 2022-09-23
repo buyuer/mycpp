@@ -7,7 +7,8 @@
 
 #define STRING_DEFAULT_SIZE 2
 
-template <typename CharT, CharT EOF_ = 0> size_t Strlen(const CharT *str)
+template <typename CharT, CharT EOF_ = 0>
+size_t Strlen(const CharT *str)
 {
     auto len = 0;
     while (*str++ != EOF_)
@@ -51,7 +52,8 @@ size_t FindSubStr(const CharT *str, size_t str_size, size_t pos,
     return -1;
 }
 
-template <typename CharT> class BasicString
+template <typename CharT>
+class BasicString
 {
   public:
     using size_type = size_t;
@@ -333,7 +335,8 @@ bool operator==(const BasicString<T> &str1, const BasicString<T> &str2)
     return CompareStr(str1.c_str(), str2.c_str(), str1.size());
 }
 
-template <typename T> bool operator==(const BasicString<T> &str1, const T *str2)
+template <typename T>
+bool operator==(const BasicString<T> &str1, const T *str2)
 {
     if (str1.size() != Strlen(str2))
     {
@@ -342,7 +345,8 @@ template <typename T> bool operator==(const BasicString<T> &str1, const T *str2)
     return CompareStr(str1.c_str(), str2, str1.size());
 }
 
-template <typename T> bool operator==(const T *str1, const BasicString<T> &str2)
+template <typename T>
+bool operator==(const T *str1, const BasicString<T> &str2)
 {
     return str2 == str1;
 }
@@ -357,7 +361,8 @@ bool operator!=(const BasicString<T> &str1, const BasicString<T> str2)
     return !CompareStr(str1.c_str(), str2.c_str(), str1.size());
 }
 
-template <typename T> bool operator!=(const BasicString<T> &str1, const T *str2)
+template <typename T>
+bool operator!=(const BasicString<T> &str1, const T *str2)
 {
     if (str1.size() != Strlen(str2))
     {
@@ -366,14 +371,16 @@ template <typename T> bool operator!=(const BasicString<T> &str1, const T *str2)
     return !CompareStr(str1.c_str(), str2, str1.size());
 }
 
-template <typename T> bool operator!=(const T *str1, const BasicString<T> &str2)
+template <typename T>
+bool operator!=(const T *str1, const BasicString<T> &str2)
 {
     return str2 != str1;
 }
 
 using String = BasicString<char>;
 
-template <typename CharT> class BasicStringView
+template <typename CharT>
+class BasicStringView
 {
   public:
     using size_type = size_t;

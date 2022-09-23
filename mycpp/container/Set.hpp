@@ -7,7 +7,8 @@
 #include "Map.hpp"
 #include "Vector.hpp"
 
-template <typename KEY, typename COMPARE = LessThan<KEY>> class Set
+template <typename KEY, typename COMPARE = LessThan<KEY>>
+class Set
 {
   public:
     using value_type = KEY;

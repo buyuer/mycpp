@@ -3,7 +3,8 @@
 namespace mycpp
 {
 
-template <class T> class iterator
+template <class T>
+class iterator
 {
   public:
     virtual T &operator*() = 0;

@@ -9,7 +9,8 @@
 
 #define VECTOR_DEFAULT_INCREMENT_COUNT 16
 
-template <typename T> T *memmove_up(T *dst, T *src, size_t size)
+template <typename T>
+T *memmove_up(T *dst, T *src, size_t size)
 {
     for (size_t index = size; index > 0; --index)
     {
@@ -18,7 +19,8 @@ template <typename T> T *memmove_up(T *dst, T *src, size_t size)
     return dst;
 }
 
-template <typename T> T *memmove_down(T *dst, T *src, size_t size)
+template <typename T>
+T *memmove_down(T *dst, T *src, size_t size)
 {
     for (size_t index = 0; index < size; ++index)
     {
@@ -27,7 +29,8 @@ template <typename T> T *memmove_down(T *dst, T *src, size_t size)
     return dst;
 }
 
-template <typename T> T *memmove_(T *dst, T *src, size_t size)
+template <typename T>
+T *memmove_(T *dst, T *src, size_t size)
 {
     if (dst > src)
     {
@@ -43,7 +46,8 @@ template <typename T> T *memmove_(T *dst, T *src, size_t size)
     }
 }
 
-template <typename T> T *memcpy_(T *dst, T *src, size_t size)
+template <typename T>
+T *memcpy_(T *dst, T *src, size_t size)
 {
     for (size_t index = 0; index < size; ++index)
     {
@@ -52,7 +56,8 @@ template <typename T> T *memcpy_(T *dst, T *src, size_t size)
     return dst;
 }
 
-template <size_t S = 1> class AllocatorAll
+template <size_t S = 1>
+class AllocatorAll
 {
   public:
     void *malloc(size_t size)
@@ -90,7 +95,8 @@ template <size_t S = 1> class AllocatorAll
     }
 };
 
-template <typename T> class AllocatorOne
+template <typename T>
+class AllocatorOne
 {
   public:
     void *malloc(size_t size)
@@ -141,7 +147,8 @@ template <typename T> class AllocatorOne
     size_t size_{0};
 };
 
-template <typename T, typename ALLOCATOR = AllocatorOne<T>> class Vector
+template <typename T, typename ALLOCATOR = AllocatorOne<T>>
+class Vector
 {
   public:
     using size_type = size_t;
@@ -463,7 +470,8 @@ template <typename T, typename ALLOCATOR = AllocatorOne<T>> class Vector
         }
     }
 
-    template <typename... ARGS> T &emplace_back(ARGS &&...args)
+    template <typename... ARGS>
+    T &emplace_back(ARGS &&...args)
     {
         return *emplace(this->end(), args...);
     }

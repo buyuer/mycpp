@@ -5,7 +5,8 @@
 namespace mycpp
 {
 
-template <class T> class basic_buff : public std::basic_streambuf<T>
+template <class T>
+class basic_buff : public std::basic_streambuf<T>
 {
 
     using int_type = typename std::basic_streambuf<T>::int_type;

@@ -5,3 +5,4 @@ AlignTrailingComments: true
 AlignConsecutiveAssignments: AcrossComments
 AlignConsecutiveDeclarations: AcrossComments
 AlignConsecutiveMacros: Consecutive
+AlwaysBreakTemplateDeclarations: Yes

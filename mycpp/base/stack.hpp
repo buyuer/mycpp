@@ -3,7 +3,8 @@
 namespace mycpp
 {
 
-template <class T> class stack
+template <class T>
+class stack
 {
   public:
     stack()

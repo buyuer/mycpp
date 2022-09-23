@@ -4,7 +4,8 @@
 
 #include "Base.hpp"
 
-template <typename T> class List
+template <typename T>
+class List
 {
   private:
     struct Context
@@ -114,7 +115,8 @@ template <typename T> class List
         emplace_back(target);
     }
 
-    template <class... Args> iterator emplace_back(Args &&...args)
+    template <class... Args>
+    iterator emplace_back(Args &&...args)
     {
         auto new_node  = new Context(args...);
         new_node->last = tail_;

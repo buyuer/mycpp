@@ -6,13 +6,15 @@
 
 #include "Base.hpp"
 
-template <typename FIRST, typename SECOND> struct Pair
+template <typename FIRST, typename SECOND>
+struct Pair
 {
     FIRST  first;
     SECOND second;
 };
 
-template <typename T> class LessThan
+template <typename T>
+class LessThan
 {
   public:
     bool operator()(const T &a, const T &b)
@@ -21,7 +23,8 @@ template <typename T> class LessThan
     }
 };
 
-template <typename T> class MoreThan
+template <typename T>
+class MoreThan
 {
   public:
     bool operator()(const T &a, const T &b)

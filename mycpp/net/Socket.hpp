@@ -169,8 +169,8 @@ class Socket
     mycpp::Socket accept()
     {
 
-        mycpp::Socket  temp;
-        ::socklen_t addr_len;
+        mycpp::Socket temp;
+        ::socklen_t   addr_len;
         if (this->sock->af == mycpp::Socket::IPV4)
         {
             addr_len = sizeof(::sockaddr_in);

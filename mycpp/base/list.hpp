@@ -5,7 +5,8 @@
 namespace mycpp
 {
 
-template <class T> class list
+template <class T>
+class list
 {
   public:
     list()

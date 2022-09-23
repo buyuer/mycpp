@@ -6,7 +6,8 @@
 namespace mycpp
 {
 
-template <class T> class list_link : public list<T>, public stack<T>
+template <class T>
+class list_link : public list<T>, public stack<T>
 {
 
     struct element
@@ -77,13 +78,15 @@ template <class T> class list_link : public list<T>, public stack<T>
 
         bool operator!=(const mycpp::iterator<T> &it) noexcept(false) override
         {
-            const auto i = dynamic_cast<const mycpp::list_link<T>::iterator &>(it);
+            const auto i =
+                dynamic_cast<const mycpp::list_link<T>::iterator &>(it);
             return i.rec != this->rec;
         }
 
         bool operator==(const mycpp::iterator<T> &it) override
         {
-            const auto i = dynamic_cast<const mycpp::list_link<T>::iterator &>(it);
+            const auto i =
+                dynamic_cast<const mycpp::list_link<T>::iterator &>(it);
             return i.rec == this->rec;
         }
 
@@ -322,7 +325,8 @@ template <class T> class list_link : public list<T>, public stack<T>
     }
 };
 
-template <class T> class list_array : public list<T>, public stack<T>
+template <class T>
+class list_array : public list<T>, public stack<T>
 {
   private:
     T           *data;
@@ -569,7 +573,8 @@ template <class T> class list_array : public list<T>, public stack<T>
     }
 };
 
-template <class T> class slice
+template <class T>
+class slice
 {
 };
 } // namespace mycpp

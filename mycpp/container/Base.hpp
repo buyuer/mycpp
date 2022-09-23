@@ -12,7 +12,8 @@ FAR void *operator new(std::size_t nbytes, FAR void *ptr);
 
 FAR void *operator new[](std::size_t nbytes, FAR void *ptr);
 
-template <typename T> T &&Move(const T &arg)
+template <typename T>
+T &&Move(const T &arg)
 {
     return const_cast<T &&>(arg);
 }

@@ -82,7 +82,7 @@ class Server
             it->second.cv.wait(ul);
 
             mycpp::socketbuff buff(client_.get_socket(), client_.get_socket());
-            std::iostream  io(&buff);
+            std::iostream     io(&buff);
 
             handler_(client_);
 
