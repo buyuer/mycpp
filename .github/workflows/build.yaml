@@ -1,0 +1,24 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  Linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt install cmake
+          sudo apt install gcc g++
+
+      - name: build project
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          cmake --build .
