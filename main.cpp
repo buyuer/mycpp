@@ -1,13 +1,18 @@
-#include "mycpp/mycpp.hpp"
+import mycpp;
+
+#include <iostream>
+#include <vector>
 
 int main(int argc, char **argv)
 {
-    mycpp::HttpServer server(10001);
+    std::vector<int> nums{666, 3, 34, 2};
 
-    server.add_route("get_name",
-                     [](mycpp::HttpRequest &, mycpp::HttpResponse &) -> void {
+    mycpp::SelectionSort(nums.data(), nums.size(),
+                         [](int a, int b) -> bool { return a > b; });
 
-                     });
-
-    server.start();
+    for (auto &num : nums)
+    {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
 }
