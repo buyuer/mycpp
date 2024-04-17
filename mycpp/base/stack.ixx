@@ -1,19 +1,16 @@
-#pragma once
+module;
+export module mycpp.base:stack;
 
-namespace mycpp
+export namespace mycpp
 {
 
 template <class T>
 class stack
 {
   public:
-    stack()
-    {
-    }
+    stack() = default;
 
-    virtual ~stack()
-    {
-    }
+    virtual ~stack() = default;
 
     virtual void push(const T &) = 0;
 
@@ -21,4 +18,5 @@ class stack
 
     virtual T &peek() = 0;
 };
+
 } // namespace mycpp

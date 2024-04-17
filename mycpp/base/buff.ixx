@@ -1,12 +1,32 @@
-#pragma once
+module;
 
-#include "mycpp/base/interface.hpp"
+#include <streambuf>
+#if defined(linux) or defined(__linux) or defined(__linux__) or                \
+    defined(unix) or defined(__unix) or defined(__unix__)
+#define USE_LINUX
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netinet/in.h>
+#include <sys/epoll.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <unistd.h>
+#elif defined(WIN32) or defined(_WIN64) or defined(_WIN32)
+#define USE_WIN32
+#include <io.h>
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
 
-namespace mycpp
+export module mycpp.base:buff;
+
+export namespace mycpp
 {
 
 template <class T>
-class basic_buff : public std::basic_streambuf<T>
+class BasicBuff : public std::basic_streambuf<T>
 {
 
     using int_type = typename std::basic_streambuf<T>::int_type;
@@ -57,7 +77,7 @@ class basic_buff : public std::basic_streambuf<T>
     }
 
   public:
-    basic_buff() : reader(nullptr), writer(nullptr), w(0), r(0), is_init(false)
+    BasicBuff() : reader(nullptr), writer(nullptr), w(0), r(0), is_init(false)
     {
 
         this->setg(reader_buf, reader_buf + READER_BUF_SIZE,
@@ -66,21 +86,21 @@ class basic_buff : public std::basic_streambuf<T>
         this->setp(writer_buf, writer_buf + WRITER_BUF_SIZE - 1);
     }
 
-    basic_buff(const basic_buff &) = delete;
+    BasicBuff(const BasicBuff &) = delete;
 
-    basic_buff(basic_buff &&) = delete;
+    BasicBuff(BasicBuff &&) = delete;
 
-    basic_buff &operator=(const basic_buff &) = delete;
+    BasicBuff &operator=(const BasicBuff &) = delete;
 
-    basic_buff &operator=(basic_buff &&) = delete;
+    BasicBuff &operator=(BasicBuff &&) = delete;
 
-    ~basic_buff()
+    ~BasicBuff()
     {
         if (is_init)
             sync();
     }
 
-    virtual int_type overflow(int_type c) override
+    int_type overflow(int_type c) override
     {
         if (c != EOF)
         {
@@ -94,7 +114,7 @@ class basic_buff : public std::basic_streambuf<T>
         return c;
     }
 
-    virtual int sync() override
+    int sync() override
     {
         if (flush_buffer() == EOF)
         {
@@ -103,7 +123,7 @@ class basic_buff : public std::basic_streambuf<T>
         return 0;
     }
 
-    virtual int_type underflow() override
+    int_type underflow() override
     {
 
 #ifdef USE_LINUX
@@ -132,7 +152,7 @@ class basic_buff : public std::basic_streambuf<T>
   public:
 #ifdef USE_LINUX
 
-    basic_buff(int out_, int in_) : basic_buff()
+    BasicBuff(int out_, int in_) : BasicBuff()
     {
         init(out_, in_);
     }
@@ -149,7 +169,7 @@ class basic_buff : public std::basic_streambuf<T>
 #endif
 
 #ifdef USE_WIN32
-    basic_buff(::HANDLE in_, ::HANDLE out_) : basic_buff()
+    BasicBuff(::HANDLE in_, ::HANDLE out_) : BasicBuff()
     {
         init(in_, out_);
     }
@@ -163,7 +183,8 @@ class basic_buff : public std::basic_streambuf<T>
 #endif
 };
 
-using pipebuff   = basic_buff<char>;
-using socketbuff = basic_buff<char>;
-using serialbuff = basic_buff<char>;
+using pipebuff   = BasicBuff<char>;
+using socketbuff = BasicBuff<char>;
+using serialbuff = BasicBuff<char>;
+
 } // namespace mycpp

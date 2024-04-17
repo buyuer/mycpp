@@ -15,4 +15,6 @@ int main(int argc, char **argv)
         std::cout << num << " ";
     }
     std::cout << std::endl;
+
+    mycpp::ListLink<int> list;
 }

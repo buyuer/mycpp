@@ -1,13 +1,16 @@
-#pragma once
+module;
+#include <cstddef>
+export module mycpp.base:container;
 
-#include "mycpp/base/list.hpp"
-#include "mycpp/base/stack.hpp"
+import :list;
+import :stack;
+import :iterator;
 
-namespace mycpp
+export namespace mycpp
 {
 
 template <class T>
-class list_link : public list<T>, public stack<T>
+class ListLink : public list<T>, public stack<T>
 {
 
     struct element
@@ -16,7 +19,7 @@ class list_link : public list<T>, public stack<T>
         element *last;
         element *next;
 
-        element(const T &d) : last(nullptr), next(nullptr), value(d)
+        explicit element(const T &d) : last(nullptr), next(nullptr), value(d)
         {
         }
     };
@@ -31,36 +34,36 @@ class list_link : public list<T>, public stack<T>
 
         element *rec;
 
-        iterator(element *p) : rec(p)
+        explicit iterator(element *p) : rec(p)
         {
         }
 
       public:
-        friend mycpp::list_link<T>;
+        friend mycpp::ListLink<T>;
 
         iterator() : rec(nullptr)
         {
         }
 
-        mycpp::list_link<T>::iterator &operator++() override
+        mycpp::ListLink<T>::iterator &operator++() override
         {
             rec = rec->next;
             return *this;
         }
 
-        mycpp::list_link<T>::iterator &operator--() override
+        mycpp::ListLink<T>::iterator &operator--() override
         {
             rec = rec->last;
             return *this;
         }
 
-        mycpp::list_link<T>::iterator operator++(int i) override
+        mycpp::ListLink<T>::iterator operator++(int i) override
         {
             rec = rec->next;
             return *this;
         }
 
-        mycpp::list_link<T>::iterator &operator--(int i) override
+        mycpp::ListLink<T>::iterator &operator--(int i) override
         {
             rec = rec->last;
             return *this;
@@ -79,31 +82,31 @@ class list_link : public list<T>, public stack<T>
         bool operator!=(const mycpp::iterator<T> &it) noexcept(false) override
         {
             const auto i =
-                dynamic_cast<const mycpp::list_link<T>::iterator &>(it);
+                dynamic_cast<const mycpp::ListLink<T>::iterator &>(it);
             return i.rec != this->rec;
         }
 
         bool operator==(const mycpp::iterator<T> &it) override
         {
             const auto i =
-                dynamic_cast<const mycpp::list_link<T>::iterator &>(it);
+                dynamic_cast<const mycpp::ListLink<T>::iterator &>(it);
             return i.rec == this->rec;
         }
 
-        /*bool operator!=(const mycpp::list_link<T>::iterator &b) const {
+        /*bool operator!=(const mycpp::ListLink<T>::iterator &b) const {
             return b.rec != this->rec;
         }*/
 
-        /*bool operator==(const mycpp::list_link<T>::iterator &b) const {
+        /*bool operator==(const mycpp::ListLink<T>::iterator &b) const {
             return b.rec == this->rec;
         }*/
     };
 
-    list_link() : size(0), head(nullptr), tail(nullptr)
+    ListLink() : size(0), head(nullptr), tail(nullptr)
     {
     }
 
-    list_link(const list_link<T> &ll) : list_link()
+    ListLink(const ListLink<T> &ll) : ListLink()
     {
 
         size               = ll.size;
@@ -123,7 +126,7 @@ class list_link : public list<T>, public stack<T>
         head->last  = last;
     }
 
-    list_link(list_link<T> &&ll)
+    ListLink(ListLink<T> &&ll) noexcept
     {
         size    = ll.size;
         head    = ll.head;
@@ -133,21 +136,21 @@ class list_link : public list<T>, public stack<T>
         ll.tail = nullptr;
     }
 
-    list_link &operator=(const list_link<T> &ll) noexcept
+    ListLink &operator=(const ListLink<T> &ll) noexcept
     {
         clean();
-        new (this) list_link(ll);
+        new (this) ListLink(ll);
         return *this;
     }
 
-    list_link &operator=(list_link<T> &&ll)
+    ListLink &operator=(ListLink<T> &&ll)
     {
         clean();
-        new (this) list_link(static_cast<list_link<T> &&>(ll));
+        new (this) ListLink(static_cast<ListLink<T> &&>(ll));
         return *this;
     }
 
-    ~list_link()
+    ~ListLink()
     {
         if (size == 0 || head == nullptr)
         {
@@ -184,12 +187,12 @@ class list_link : public list<T>, public stack<T>
         }
         else
         {
-            element *temp = new element(e);
-            temp->last    = tail;
-            temp->next    = nullptr;
-            tail->next    = temp;
-            tail          = temp;
-            head->last    = nullptr;
+            auto *temp = new element(e);
+            temp->last = tail;
+            temp->next = nullptr;
+            tail->next = temp;
+            tail       = temp;
+            head->last = nullptr;
         }
         ++size;
     }
@@ -297,12 +300,12 @@ class list_link : public list<T>, public stack<T>
         return size == 0;
     }
 
-    mycpp::list_link<T>::iterator begin()
+    mycpp::ListLink<T>::iterator begin()
     {
         return iterator(head);
     }
 
-    mycpp::list_link<T>::iterator end()
+    mycpp::ListLink<T>::iterator end()
     {
         return iterator(nullptr);
     }
@@ -330,8 +333,8 @@ class list_array : public list<T>, public stack<T>
 {
   private:
     T           *data;
-    size_t       len;
-    size_t       cap;
+    size_t       len{};
+    size_t       cap{};
     const size_t increment = 64;
 
     void copy(T *s, T *d, size_t size)
@@ -438,7 +441,7 @@ class list_array : public list<T>, public stack<T>
     {
     }
 
-    list_array(list_array &&la)
+    list_array(list_array &&la) noexcept
     {
     }
 
@@ -450,9 +453,7 @@ class list_array : public list<T>, public stack<T>
     {
     }
 
-    ~list_array()
-    {
-    }
+    ~list_array() = default;
 
     void add(const T &e) override
     {
@@ -577,4 +578,5 @@ template <class T>
 class slice
 {
 };
+
 } // namespace mycpp

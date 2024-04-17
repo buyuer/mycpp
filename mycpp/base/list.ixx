@@ -1,19 +1,17 @@
-#pragma once
+module;
+#include <cstddef>
+export module mycpp.base:list;
 
-#include "mycpp/base/iterator.hpp"
-
-namespace mycpp
+export namespace mycpp
 {
 
 template <class T>
 class list
 {
   public:
-    list()
-    {
-    }
+    list() = default;
 
-    virtual ~list(){};
+    virtual ~list() = default;
 
     virtual void add(const T &e) = 0;
 
@@ -27,7 +25,7 @@ class list
 
     virtual T &get(size_t pos) const = 0;
 
-    virtual T &operator[](const size_t pos) const = 0;
+    virtual T &operator[](size_t pos) const = 0;
 
     virtual void clean() = 0;
 

@@ -1,4 +1,4 @@
-#pragma once
+module;
 
 #include <condition_variable>
 #include <mutex>
@@ -6,7 +6,9 @@
 #include <thread>
 #include <vector>
 
-namespace mycpp
+export module mycpp.base:system;
+
+export namespace mycpp
 {
 
 class ThreadPool
@@ -103,4 +105,5 @@ class ThreadPool
         cv.notify_one();
     }
 };
+
 } // namespace mycpp

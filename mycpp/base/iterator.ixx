@@ -1,6 +1,7 @@
-#pragma once
+module;
+export module mycpp.base:iterator;
 
-namespace mycpp
+export namespace mycpp
 {
 
 template <class T>
