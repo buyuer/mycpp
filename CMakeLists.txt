@@ -8,10 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(mycpp)
 find_package(Threads)
 
-add_executable(mycpp_test)
+add_executable(mycpp_test main.cpp)
 # target_link_libraries(mycpp_test PUBLIC mycpp)
+target_sources(mycpp_test PUBLIC ${MYCPP_SOURCE_FILES})
 target_sources(mycpp_test PUBLIC
         FILE_SET all_modules
         TYPE CXX_MODULES
-        FILES ${MYCPP_MODULES_FILES})
-target_sources(mycpp_test PUBLIC main.cpp)
+        FILES ${MYCPP_MODULE_FILES})

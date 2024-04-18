@@ -1,10 +1,38 @@
-#pragma once
+module;
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
+export module mycpp.net:http;
 
-#include "Http.hpp"
-#include "Server.hpp"
+import :server;
+import :socket;
 
-namespace mycpp
+export namespace mycpp
 {
+
+class Http
+{
+
+  private:
+  protected:
+    std::vector<std::string>           line;
+    std::map<std::string, std::string> fields;
+    std::string                        body;
+
+    bool parse(const uint8_t *data)
+    {
+        return false;
+    }
+};
+
+class HttpRequest : public Http
+{
+};
+
+class HttpResponse : public Http
+{
+};
 
 class HttpServer : public Server
 {
@@ -43,4 +71,9 @@ class HttpServer : public Server
         route[path] = routeHandler;
     }
 };
+
+class HttpClient
+{
+};
+
 } // namespace mycpp

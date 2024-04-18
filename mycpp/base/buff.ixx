@@ -1,6 +1,7 @@
 module;
 
 #include <streambuf>
+
 #if defined(linux) or defined(__linux) or defined(__linux__) or                \
     defined(unix) or defined(__unix) or defined(__unix__)
 #define USE_LINUX

@@ -1,8 +1,34 @@
-#pragma once
+module;
 
-#include "mycpp/base/base.hpp"
+#include <cstring>
+#include <iostream>
+#include <string>
+#include <vector>
 
-namespace mycpp
+#if defined(linux) or defined(__linux) or defined(__linux__) or                \
+    defined(unix) or defined(__unix) or defined(__unix__)
+#define USE_LINUX
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netinet/in.h>
+#include <sys/epoll.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <unistd.h>
+#elif defined(WIN32) or defined(_WIN64) or defined(_WIN32)
+#define USE_WIN32
+#include <io.h>
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
+export module mycpp.net:socket;
+
+import mycpp.base;
+
+export namespace mycpp
 {
 
 class Socket
@@ -243,6 +269,7 @@ class Socket
         return this->sock->port;
     }
 };
+
 } // namespace mycpp
 
 #ifdef USE_WIN32

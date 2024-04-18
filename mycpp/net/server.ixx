@@ -1,8 +1,20 @@
-#pragma once
+module;
 
-#include "mycpp/net/Socket.hpp"
+#include <condition_variable>
+#include <iostream>
+#include <map>
+#include <mutex>
+#include <string>
+#include <thread>
 
-namespace mycpp
+#include <sys/epoll.h>
+
+export module mycpp.net:server;
+
+import :socket;
+import mycpp.base;
+
+export namespace mycpp
 {
 
 class Server
@@ -209,12 +221,14 @@ class Server
                 {
                     /*sockaddr_in client;
                     socklen_t len = sizeof(client);
-                    int cfd = ::accept(listen_socket.get_socket(), (sockaddr *)
-                    (&client), &len); if (cfd == -1) { perror("accept failed");
-                        continue;
+                    int cfd = ::accept(listen_socket.get_socket(), (sockaddr
+                    *)
+                    (&client), &len); if (cfd == -1) { perror("accept
+                    failed"); continue;
                     }
                     char addr[30] = {0};
-                    inet_ntop(Socket::IPV4, &client, addr, sizeof(client));*/
+                    inet_ntop(Socket::IPV4, &client, addr,
+                    sizeof(client));*/
 
                     mycpp::Socket client = this->listen_socket.accept();
 
