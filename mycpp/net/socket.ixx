@@ -50,7 +50,7 @@ class Socket
     {
         int          rec_num;
         int          socket_fd;
-        sockaddr_in6 addr;
+        sockaddr_in6 addr{};
 
         socketbuff    sockbuf;
         std::iostream io;

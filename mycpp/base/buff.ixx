@@ -29,11 +29,10 @@ export namespace mycpp
 template <class T>
 class BasicBuff : public std::basic_streambuf<T>
 {
-
     using int_type = typename std::basic_streambuf<T>::int_type;
 
-    static const size_t WRITER_BUF_SIZE = 512;
-    static const size_t READER_BUF_SIZE = 512;
+    static constexpr size_t WRITER_BUF_SIZE = 512;
+    static constexpr size_t READER_BUF_SIZE = 512;
 
   private:
     FILE *reader;
@@ -95,7 +94,7 @@ class BasicBuff : public std::basic_streambuf<T>
 
     BasicBuff &operator=(BasicBuff &&) = delete;
 
-    ~BasicBuff()
+    ~BasicBuff() override
     {
         if (is_init)
             sync();

@@ -13,7 +13,6 @@ export namespace mycpp
 
 class Http
 {
-
   private:
   protected:
     std::vector<std::string>           line;
@@ -57,11 +56,11 @@ class HttpServer : public Server
         };
     }
 
-    virtual ~HttpServer()
+    ~HttpServer() override
     {
     }
 
-    virtual void start() override
+    void start() override
     {
         Server::start();
     }
